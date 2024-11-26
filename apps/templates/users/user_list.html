@@ -1,0 +1,63 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %}List Users{% endblock %}
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="{% url 'register' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Users</a>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title ">Users</h4>
+                <p class="card-category"></p>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class=" text-primary">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">User NAME</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">STATUS</th>
+                            <th scope="col">ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td style="color:black">{{forloop.counter}}</td>
+                            <td style="color:black">{{user.user.username}}</td>
+                            <td style="color:black">{{user.role}}</td>
+                            <td><input type="checkbox" disabled id="toggle{{ act.id }}" {% if act.status %}checked{% endif %}></td>
+                            <td>
+                                <a href="/user/delete/{{user.id}}"
+                                   class="btn btn-danger btn-sm">Delete</a>
+                                <a href="/user/update/{{user.id}}"
+                                   class="btn btn-success btn-sm">Update</a>
+                                <a href="/user/update/password/{{user.id}}"
+                                   class="btn btn-danger btn-sm">Change Password</a>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

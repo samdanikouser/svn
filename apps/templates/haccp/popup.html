@@ -1,0 +1,51 @@
+<div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup" id="popup" hidden>
+        <h2 id="popupTitle">Popup Title</h2>
+        <form id="popupForm">
+            <p>The value you entered is different from the set norm .what did you do?</p>
+            <p>Set norm is :</p><p id="popupContent"></p>
+            <input type="checkbox" id="checkbox1"> <label for="checkbox1">Door was open,closed it,re-check after 1 hour</label><br>
+            <input type="checkbox" id="checkbox2"> <label for="checkbox2">Measurement error</label><br>
+            <input type="checkbox" id="checkbox3"> <label for="checkbox3">Allowed difference +/-1°C</label><br>
+            <input type="checkbox" id="checkbox4"> <label for="checkbox4">Equipment is broken</label><br>
+            <input type="checkbox" id="checkbox5"> <label for="checkbox5">Called to maintenance</label><br>
+            <input type="checkbox" id="checkbox6"> <label for="checkbox6">Food was re-stored</label><br>
+            <input type="checkbox" id="checkbox7"> <label for="checkbox7">Discard the food</label><br>
+            <input type="checkbox" id="checkbox8"> <label for="checkbox8">Equipment turned off</label><br>
+            <label for="additionalText">Custom value:</label><br>
+            <input type="text" id="additionalText" name="additionalText"><br><br>
+            <button type="button" onclick="closePopup()">Close</button>
+            <button type="button" onclick="closePopup()">Save</button>
+        </form>
+        <button type="button" onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        function showPopup(title, content) {
+            document.getElementById('popup').removeAttribute("hidden");
+            document.getElementById('popupTitle').innerText = title;
+            document.getElementById('popupContent').innerHTML = content;
+            document.getElementById('popup').style.display = 'block';
+            document.getElementById('popupOverlay').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.trigger-popup-input').forEach(function(input) {
+                input.addEventListener('input', function() {
+                    var value = parseInt(this.value);
+                    var min = parseInt(this.getAttribute('data-min'));
+                    var max = parseInt(this.getAttribute('data-max'));
+                    if (!isNaN(value) && value >= min && value <= max) {
+                        var title = this.getAttribute('data-title');
+                        var content = this.getAttribute('data-content');
+                        showPopup(title, content);
+                    }
+                });
+            });
+        });
+    </script>

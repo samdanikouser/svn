@@ -1,0 +1,65 @@
+{% load static %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/login.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="login-container">
+        <!-- Logo at the top of the page, centered -->
+        <div class="logo-container">
+            <img src="{% static 'assets/img/login/svnlogo.jpeg' %}" alt="SVN Logo" class="logo">
+        </div>
+
+        <!-- Main login form container -->
+        <div class="login-form-container">
+            <!-- Left section for User Login -->
+            <div class="login-box">
+                <h2>Login</h2>
+                <form method="POST">
+                     {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" id="username" name="username" placeholder="User Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <select name="location" id="location" class="form-control">
+                                <option value="" disabled selected>Select Location</option>
+                                {% for location in locations %}
+                                <option value="{{ location.id }}">{{ location.name }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="options">
+                        <label>
+                            <input type="checkbox" name="remember"> Remember Me
+                        </label>
+                        <!-- Forgot Password as a link that triggers error message -->
+                        <a href="#" class="forgot-password-link" onclick="showError()">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+
+                <!-- Error message that will be shown when Forgot Password is clicked -->
+                {% if error_message %}
+                     <p style="color:red;">{{ error_message }}</p>
+                {% else %}
+                    <p id="error-message" class="error-message" style="color:red;">Please contact admin for assistance.</p>
+                {% endif %}
+            </div>
+
+            <!-- Right section for Face Login -->
+            <div class="face-login">
+                <h2>Face Login</h2>
+                <button class="face-login-button">Use Face Recognition</button>
+            </div>
+        </div>
+    </div>
+{% block javascripts %}
+    <script src="{% static 'assets/js/login/showerror.js' %}"></script>
+{% endblock javascripts %}
+{% endblock content %}
+
+

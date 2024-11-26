@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Update Actions{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Update Actions</h4>
+            </div>
+            <div class="card-body">
+                 <form action="/action/update/{{action.id}}" method="POST">
+                    {% csrf_token %}
+                    <!--Employee Name-->
+                    <div class="mb-3">
+                        <label>Action name</label>
+                        {{ form.name}}
+                        {% if form.errors.name %}
+                        <div class="alert alert-danger">
+                            <strong> {{form.errors.name.as_text|cut:"* " }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label>Status</label>
+                        {{ form.status}}
+                        {% if form.errors.status %}
+                        <div class="alert alert-danger">
+                            <strong> {{form.errors.status.as_text|cut:"* " }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-success" type="submit">
+                            Update Action
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

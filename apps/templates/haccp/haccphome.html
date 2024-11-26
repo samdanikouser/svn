@@ -1,0 +1,43 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{name}}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="{% url 'haccp_list' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">List Task</a>
+</div>
+
+<div class="card">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title"><b>{{name}}</b></h4>
+    </div>
+    <div class="card-body">
+        <div id="typography">
+            <div class="row">
+                <div class="tim-typo">
+                    <div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <a href="{% url 'storage_location' name 'Fridge' %}"
+                               class="btn btn-outline-info btn-block " style="font-family:Monospace">Fridge</a>
+                            <a href="{% url 'storage_location' name 'Freezer' %}"
+                               class="btn btn-outline-info btn-block" style="font-family:Monospace">Freezer</a>
+                            <a href="{% url 'storage_location' name 'Cooking' %}"
+                               class="btn btn-outline-info btn-block" style="font-family:Monospace">Cooking</a>
+                            <a href="{% url 'storage_location' name 'Cooling' %}"
+                               class="btn btn-outline-info btn-block" style="font-family:Monospace">Cooling</a>
+                            <a href="{% url 'storage_location' name 'Reheating' %}"
+                               class="btn btn-outline-info btn-block" style="font-family:Monospace">Reheating</a>
+                            <a href="{% url 'storage_location' name 'Sanitazation' %}"
+                               class="btn btn-outline-info btn-block" style="font-family:Monospace">Sanitazation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

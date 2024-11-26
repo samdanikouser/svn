@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Delete Actions{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Delete Actions</h4>
+            </div>
+            <div class="card-body">
+                 <form action="/action/delete/{{action.id}}" method="post">
+                            {% csrf_token %}
+                                             <p>Are you sure you want to delete this Action,this may delete related to this Details?<b>{{ action.name }}</b></p>
+
+                            <input type="submit" class="btn btn-danger">
+                            </form>
+                 </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,36 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+    <div class=" text-center mt-5 ">
+        <h1 style="font-family:Monospace">Add Roles</h1>
+    </div>
+    <div class="row ">
+        <div class="col-lg-7 mx-auto">
+            <div class="card mt-2 mx-auto p-4 bg-light">
+                <div class="card-body bg-light">
+                        <form action="/role/add" method="POST">
+                            {% csrf_token %}
+                            <!--Employee Name-->
+                            <div class="mb-3">
+                                <label style="font-family:Monospace">Role</label>
+                                {{ form.name}}
+                                {% if form.errors.name %}
+                                <div class="alert alert-danger">
+                                    <strong> {{form.errors.name.as_text|cut:"* " }}</strong>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-success">
+                                    Add Role
+                                </button>
+                            </div>
+                        </form>
+                </div>
+
+            </div>
+            <!-- /.8 -->
+        </div>
+        <!-- /.row-->
+    </div>
+{% endblock content %}

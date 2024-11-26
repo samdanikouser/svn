@@ -1,0 +1,66 @@
+/* Style for nav-item */
+.nav-item {
+  list-style: none;
+  margin: 10px 0;
+  position: relative;
+}
+.sidebar .nav .caret {
+    margin-top: 13px;
+    position: absolute;
+    right: 6px;
+    left: 40px;
+}
+
+/* Style for nav-link */
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #555;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Style for dropdown container */
+.dropdown-container {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa; /* Light background for dropdown */
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.dropdown-container li {
+  padding: 8px 15px;
+}
+
+.dropdown-container li a {
+  color: #333;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-container li a:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Rotate caret */
+.toggle-dropdown p {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.nav-item.active .toggle-dropdown p {
+  transform: rotate(180deg);
+}

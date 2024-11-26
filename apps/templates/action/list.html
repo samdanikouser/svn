@@ -1,0 +1,48 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="{% url 'add_action' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Action</a>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title ">Corrective actions</h4>
+                <p class="card-category"></p>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class=" text-primary">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">NAME</th>
+                            <th scope="col">STATUS</th>
+                            <th scope="col">ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for act in action %}
+                        <tr>
+                            <td style="color:black">{{forloop.counter}}</td>
+                            <td style="color:black">{{act.name}}</td>
+                            <td><input type="checkbox" disabled id="toggle{{ act.id }}" {% if act.status %}checked{% endif %}></td>
+                            <td>
+                                <a href="/action/delete/{{act.id}}"
+                                   class="btn btn-danger btn-sm">Delete</a>
+                                <a href="/action/update/{{act.id}}"
+                                   class="btn btn-success btn-sm">Update</a>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,74 @@
+{% load static %}
+
+<div class="sidebar" data-color="purple" data-background-color="white" data-image="/static/assets/img/sidebar-1.jpg">
+    <div class="logo">
+        <a target="_blank" rel="noopener noreferrer"
+           href="https://svnkw.com/" class="simple-text logo-normal">
+            <img src="/static/assets/img/login/svnlogo.jpeg" alt="Logo" style="max-height: 50px; display: block; margin: auto;">
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <ul class="nav">
+            <li class="nav-item {% if 'index' in segment %} active {% endif %}">
+                <a class="nav-link" href="/">
+                    <i class="material-icons">dashboard</i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'haccp' in segment %} active {% endif %}">
+                <a href="javascript:void(0)" class="nav-link toggle-dropdown">
+                    <i class="material-icons">fact_check</i>
+                    <p>Haccp<span class="caret"></span></p>
+                </a>
+                <ul class="dropdown-container" style="display: none;">
+                    {% for location in locations %}
+                    <li>
+                        <a href="{% url 'haccp_home' location %}" style="font-family: Monospace;">
+                            {{ location.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="/page-user.html">
+                    <i class="material-icons">cleaning_services</i>
+                    <p>Stewarding</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="/page-user.html">
+                    <i class="material-icons">assignment</i>
+                    <p>Internal Orders</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="{% url 'add_more' %}">
+                    <i class="material-icons">add_circle</i>
+                    <p>Add More</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="/page-user.html">
+                    <i class="material-icons">person</i>
+                    <p>User Profile</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
+                <a class="nav-link" href="/ui-notifications.html">
+                    <i class="material-icons">notifications</i>
+                    <p>Notifications</p>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'logout' %}">
+                    <i class="material-icons">directions_run</i>
+                    <p>Logout</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+

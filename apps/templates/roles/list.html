@@ -1,0 +1,43 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<section class="intro">
+    <div class="h-100">
+        <div>
+            <a href="{% url 'addroles' %}" class="btn btn-primary btn-sm" style="font-family:Monospace">Add Roles</a>
+            <div class=" text-center ">
+                <h1 style="font-family:Monospace">Roles</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-10">
+                    <div class="table-responsive bg-white">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">S.NO.</th>
+                                <th scope="col">NAME</th>
+                                <th scope="col">ACTION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for location in location %}
+                            <tr>
+                                <td style="color:black">{{forloop.counter}}</td>
+                                <td style="color:black">{{location.name}}</td>
+                                <td>
+                                    <a href="/roles/delete/{{location.id}}"
+                                       class="btn btn-danger btn-sm">Delete</a>
+                                    <a href="/roles/update/{{location.id}}"
+                                       class="btn btn-success btn-sm">Update</a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

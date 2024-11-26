@@ -1,0 +1,190 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+
+{% block title %}{{name}}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">
+                    {{name}} -{{status}}
+                </h4>
+            </div>
+            <div class="card-body">
+                <h6 class="card-category">
+                    <b>Add task Details</b>
+                </h6>
+                <br/>
+                <form action="{% url 'storage_data_admin_data' name status %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="taskName" name="taskName" placeholder="Enter Task Name">
+                    </div>
+                    <div class="space-related-in border-radius-lg shadow">
+                        <h5 class="mt-5"
+                            style="font-family:Monospace;text-align: center;padding-top:20px; color: #007bff;">Used
+                            For</h5>
+                        <div class="row" style="padding: 10px;">
+                            <div class="col">
+                                <div class="form-group">
+                                    <input type="text" id="used_for" name="used_for" placeholder="Enter Common name"
+                                           class="form-control">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="numberofusedfor">Number of used for: </label>
+                                    <input type="number" id="numberofusedfor" name="no_of_used_for" class="form-control"
+                                           oninput="generateOnField()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-related-in border-radius-lg shadow">
+                        <h5 class="mt-5"
+                            style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">Task
+                            Details</h5>
+                        <div class="row" style="padding: 10px;">
+                            <div class="col">
+                                <div class="col">
+                                    <label>Assign Task To</label>
+                                    <select name="assign_task_to" class="form-control">
+                                        <option value="line_staff">Line Staff</option>
+                                        <option value="supervisors">Supervisors</option>
+                                        <option value="managers">Managers</option>
+                                        <option value="admin">Admin</option>
+                                        <!-- Add more options as needed -->
+                                    </select></div>
+                            </div>
+                            <div class="custom_fields">
+                                <div class="row" style="padding: 10px;">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="numberInput">Repeat every:</label>
+                                            <input type="number" id="numberInput" name="period" class="form-control"
+                                                   oninput="generateOnField()">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>Repeat Frequency</label>
+                                        <select name="repeat_frequency" class="form-control" id="repeat_frequency">
+                                            <option value="times_a_day">Times a day</option>
+                                            <option value="days">Days</option>
+                                            <option value="weeks">Weeks</option>
+                                            <option value="months">Months</option>
+                                            <option value="years">Years</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="padding: 10px;">
+                                    <div id="fieldsContainer" class="col">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-related-in border-radius-lg shadow">
+                            <h5 class="mt-5"
+                                style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">Set
+                                Temperature</h5>
+                            <div class="row" style="padding: 10px;">
+                                <div class="col">
+                                    <input type="text" class="form-control" name="max_value"
+                                           placeholder="Min Temperature">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="min_value"
+                                           placeholder="Max temperature">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="space-related-in border-radius-lg shadow">
+                            <h5 class="mt-5"
+                                style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">
+                                Corrective
+                                actions</h5>
+                            <div style="padding: 10px;">
+                                <div class="alert alert-success" style="margin: 30px;">
+                                    <span class="alert-icon">ℹ️</span>
+                                    <span>The following corrective actions will be shown when a non-compliant value is logged.</span>
+                                </div>
+                                {% for action in corrective_action %}
+                                <label>
+                                    <input type="checkbox" id="corrective_action" name="corrective_action"
+                                           value="{{ action.id }}">
+                                    {{ action.name }}
+                                </label><br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="space-related-in border-radius-lg shadow">
+                            <h5 class="mt-5"
+                                style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">Select
+                                Verifier</h5>
+                            <div style="padding: 10px;">
+                                <select name="select_verifier" class="form-control">
+                                    <option value="line_staff">Line Staff</option>
+                                    <option value="supervisors">Supervisors</option>
+                                    <option value="managers">Managers</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-block"
+                                style="padding: 10px;margin-top: 20px;">Confirm
+                        </button>
+                    </div>
+                    <script>
+                        function generateOnField() {
+                            // Get the number from the input box
+                            let numberOfFields = document.getElementById('numberInput').value;
+
+                            // Get the container where the fields will be added
+                            let container = document.getElementById('fieldsContainer');
+
+                            // Clear any existing fields
+                            container.innerHTML = '';
+
+                            // Add the specified number of fields
+                            for (let i = 0; i < numberOfFields; i++) {
+                                // Create a new div for each label and input pair
+                                let fieldWrapper = document.createElement('div');
+                                fieldWrapper.className = 'form-group';
+
+                                // Create a new label
+                                let label = document.createElement('label');
+                                label.innerText = `ON`;
+                                fieldWrapper.appendChild(label);
+
+                                // Create a new input
+                                let input = document.createElement('input');
+                                input.type = 'time';
+                                input.className = 'form-control';
+                                input.name = `time_on`;
+                                input.placeholder = `Enter time ${i + 1}`;
+                                fieldWrapper.appendChild(input);
+
+                                // Append the new field wrapper to the container
+                                container.appendChild(fieldWrapper);
+                            }
+                        }
+                    </script>
+                </form>
+                <script src="{% static 'js/scripts.js' %}"></script>
+
+            </div>
+        </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,345 @@
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Activity</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        .navbar-custom {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: #fff;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .location-btn {
+            cursor: pointer;
+        }
+
+        /* Accordion animation */
+        .activity-content {
+            display: none;
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-content.open {
+            display: block;
+        }
+        .activity-section {
+            margin-bottom: 20px; /* Add space between the activity sections */
+        }
+        .activity-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .accordion-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #04AA6D;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .accordion-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .accordion-btn .icon {
+            font-size: 20px;
+        }
+
+        .accordion-btn.active .icon {
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+        }
+
+        .activity-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.activity-title {
+    font-size: 1.2em;
+    color: #333;
+    flex: 1;
+}
+
+.activity-inputs {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.input-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.cool-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cool-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+        .save-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <header>
+        <a href="{% url 'logout' %}" class="logout-button">Logout</a>
+    </header>
+</nav>
+<!-- Main Content -->
+<div class="container">
+    <div class="px-5 ms-xl-4">
+        <i class="fas fa-crow fa-2x me-3 pt-5 mt-xl-4" style="color: #709085;"></i>
+        <span class="h1 fw-bold mb-0" style="font-family:Fantasy">{{location}} Temperature log</span>
+    </div>
+    {% for item in daily_activity %}
+    <div id="location{{ forloop.counter }}" class="activity-section">
+        <div class="accordion-btn" onclick="toggleActivity('location{{ forloop.counter }}')">
+            <span>Today's Activity - {{ item.used_for }}</span>
+            <span class="icon">&#x25BC;</span>
+        </div>
+        <div class="activity-content">
+            {% for time in item.time_on %}
+            <div class="activity-card" style="margin-bottom: 15px;">
+                <div class="activity-header">
+                    <h3 class="activity-title">At {{ time }}</h3>
+                </div>
+                <div class="activity-inputs">
+                    <label class="input-group">
+                        <span class="input-label">Min</span>
+                        <input type="text" id="min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                               class="cool-input" placeholder="Min">
+                    </label>
+                    <label class="input-group">
+                        <span class="input-label">Max</span>
+                        <input type="text" id="max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                               class="cool-input" placeholder="Max">
+                    </label>
+
+                    <button onclick="checkAndSave({{ item.id }}, 'min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', 'max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}')"
+                            class="cool-input save-btn">Save
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Modal -->
+    <div id="correctiveModal" style="display:none;">
+        <div class="modal-content">
+            <div id="correctiveMessage"></div>
+            <button onclick="confirmSave()">Save</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<script>
+    // Toggle function for accordion-style activity content
+    function toggleAccordion(locationId) {
+        var content = document.querySelector('#' + locationId + ' .activity-content');
+        var button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+        content.classList.toggle('open');
+        button.classList.toggle('active');
+    }
+
+    // Toggle the visibility of location-specific content
+    function toggleActivity(locationId) {
+        // Close all activities
+        var allActivities = document.querySelectorAll('.activity-section .activity-content');
+        allActivities.forEach(function(activity) {
+            activity.classList.remove('open');
+        });
+        var allButtons = document.querySelectorAll('.accordion-btn');
+        allButtons.forEach(function(button) {
+            button.classList.remove('active');
+        });
+
+        // Show the selected activity
+        var activity = document.querySelector('#' + locationId + ' .activity-content');
+        var button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+        activity.classList.toggle('open');
+        button.classList.toggle('active');
+    }
+
+    // Function to handle Save button click
+async function checkAndSave(itemId, minInputId, maxInputId) {
+    const minValue = parseFloat(document.getElementById(minInputId).value);
+    const maxValue = parseFloat(document.getElementById(maxInputId).value);
+
+    // Send item ID and entered min/max values to the backend to check the range
+    const response = await fetch('/check-range/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // CSRF token for Django
+        },
+        body: JSON.stringify({
+            item_id: itemId,
+            entered_min: minValue,
+            entered_max: maxValue
+        })
+    });
+
+    const data = await response.json();
+
+    // Check if the entered values are out of range
+    if (data.out_of_range) {
+        // Display corrective actions in the modal
+        const correctiveMessageDiv = document.getElementById('correctiveMessage');
+        correctiveMessageDiv.innerHTML = ''; // Clear previous messages
+
+        data.corrective_actions.forEach(action => {
+            const actionItem = document.createElement('p');
+            actionItem.innerText = action;  // Display each corrective action
+            correctiveMessageDiv.appendChild(actionItem);
+        });
+
+        document.getElementById('correctiveModal').style.display = 'block';
+
+        // Store data to save later in case corrective action is confirmed
+        window.dataToSave = { itemId, minValue, maxValue, correctiveActions: data.corrective_actions };
+    } else {
+        // Save data directly if values are in range
+        saveData(itemId, minValue, maxValue, null);
+    }
+}
+
+// Function to save data after corrective action is confirmed
+function confirmSave() {
+    if (window.dataToSave) {
+        saveData(
+            window.dataToSave.itemId,
+            window.dataToSave.minValue,
+            window.dataToSave.maxValue,
+            window.dataToSave.correctiveActions
+        );
+    }
+}
+
+// Function to send data to backend to save it
+async function saveData(itemId, minValue, maxValue, correctiveActions) {
+    const response = await fetch('/save-data/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            item_id: itemId,
+            min_value: minValue,
+            max_value: maxValue,
+            corrective_actions: correctiveActions
+        })
+    });
+
+    if (response.ok) {
+        closeModal();
+        alert("Data saved successfully!");
+    } else {
+        alert("Failed to save data.");
+    }
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById('correctiveModal').style.display = 'none';
+}
+
+// Helper function to get CSRF token (for Django)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+
+</body>
+</html>
+{% endblock %}
+

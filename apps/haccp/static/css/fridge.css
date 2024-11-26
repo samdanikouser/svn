@@ -1,0 +1,57 @@
+.row {
+    padding: 10px;
+    }
+
+    /* Applies a large border-radius, for instance, 10px */
+.border-radius-lg {
+    border-radius: 10px;
+}
+
+/* Adds a shadow around the element */
+.shadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Adds internal spacing between related items (padding) */
+.space-related-in {
+    padding: 15px;
+}
+
+/* Adds external spacing (margin) between unrelated sections, top only */
+.space-unrelated-out-t {
+    margin-top: 20px;
+}
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.repeat-on {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.days {
+    display: flex;
+    gap: 10px;
+}
+
+.day {
+    background-color: #00c853;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.day.active {
+    background-color: #009624;
+}
+
+.day:focus {
+    outline: none;
+}

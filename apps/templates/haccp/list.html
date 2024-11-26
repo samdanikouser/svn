@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div><div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title ">Haccp</h4>
+                <p class="card-category"></p>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class=" text-primary">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Storage Location</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for haccp in hccp_list %}
+                        <tr>
+                            <td style="color:black">{{forloop.counter}}</td>
+                            <td style="color:black">{{haccp.storage_location}}</td>
+                            <td style="color:black">{{haccp.used_for}}</td>
+                            <td style="color:black">{{haccp.name}}</td>
+                            <td>
+                                <a href="/haccp/delete/{{haccp.id}}"
+                                   class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

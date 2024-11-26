@@ -1,0 +1,34 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.repeat-on {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.days {
+    display: flex;
+    gap: 10px;
+}
+
+.day {
+    background-color: #00c853;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.day.active {
+    background-color: #009624;
+}
+
+.day:focus {
+    outline: none;
+}

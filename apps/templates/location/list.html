@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="{% url 'addlocation' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Location</a>
+</div>
+ <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title ">Locations</h4>
+                    <p class="card-category"></p>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class=" text-primary">
+                            <tr>
+                                <th scope="col">S.NO.</th>
+                                <th scope="col">NAME</th>
+                                <th scope="col">STATUS</th>
+                                <th scope="col">ACTION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for location in location %}
+                            <tr>
+                                <td style="color:black">{{forloop.counter}}</td>
+                                <td style="color:black">{{location.name}}</td>
+                                <td><input type="checkbox" disabled id="toggle{{ location.id }}" {% if location.status %}checked{% endif %}></td>
+                                <td>
+                                    <a href="/location/delete/{{location.id}}"
+                                       class="btn btn-danger btn-sm">Delete</a>
+                                    <a href="/location/update/{{location.id}}"
+                                       class="btn btn-success btn-sm">Update</a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}

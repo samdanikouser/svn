@@ -1,0 +1,152 @@
+    /* General Body and Background Styling */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #3b82f6, #f472b6); /* Gradient background */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;  /* Full viewport height */
+        flex-direction: column; /* Stack logo and forms vertically */
+        overflow: hidden;  /* Prevents overflow if the content doesn't fit */
+    }
+
+    /* Container to center the content */
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center the content horizontally */
+        justify-content: center;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Logo Styling */
+    .logo-container {
+        margin-bottom: 2rem; /* Space between logo and forms */
+    }
+
+    .logo {
+        width: 200px;
+    }
+
+    /* Container for Login and Face Login forms */
+    .login-form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80%;
+        max-width: 1000px; /* Max width for form container */
+    }
+
+    /* Login box styling */
+    .login-box {
+        background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+        padding: 2rem;
+        width: 350px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        color: white;
+        margin-right: 2rem; /* Space between login box and face login */
+    }
+
+    /* Title styling */
+    .login-box h2 {
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    /* Input group styling */
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    .input-group input,
+    .input-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        background: rgba(255, 255, 255, 0.2); /* Slightly transparent white background */
+        color: white;
+        outline: none;
+    }
+
+    .input-group input::placeholder,
+    .input-group select {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Options styling for Remember Me and Forgot Password */
+    .options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .options a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .options a:hover {
+        text-decoration: underline;
+    }
+
+    /* Button styling */
+    .login-button {
+        width: 100%;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 4px;
+        background-color: rgba(255, 255, 255, 0.3); /* Slightly transparent white background */
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .login-button:hover {
+        background-color: rgba(255, 255, 255, 0.5); /* Lighter on hover */
+    }
+
+    /* Styling for the Face Login Section */
+    .face-login {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        width: 350px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+
+    .face-login-button {
+        width: 100%;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 4px;
+        background-color: rgba(255, 255, 255, 0.3);
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .face-login-button:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Error message styling */
+    .error-message {
+        color: red;
+        font-size: 1rem;
+        margin-top: 10px;
+        display: none;  /* Hidden by default */
+    }

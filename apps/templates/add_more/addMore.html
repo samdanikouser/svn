@@ -1,0 +1,36 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Add More{% endblock %}
+
+{% block content %}
+
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+
+<div class="card">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title"><b>Add More</b></h4>
+    </div>
+    <div class="card-body">
+        <div id="typography">
+            <div class="row">
+                <div class="tim-typo">
+                    <div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <a href="{% url 'locationlist' %}" class="btn btn-outline-info btn-lg btn-block"
+                               style="font-family:Monospace">Location</a>
+                            <a href="{% url 'register' %}" class="btn btn-outline-info btn-lg btn-block"
+                               style="font-family:Monospace">User</a>
+                            <a href="{% url 'action_list' %}" class="btn btn-outline-info btn-lg btn-block"
+                               style="font-family:Monospace">Corrective Action</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
