@@ -7,6 +7,8 @@ from apps.location.models import Location
 from apps.roles.models import Roles
 from apps.haccp.models import HaccpAdminData
 from django.template import loader
+from django.contrib import messages
+
 
 
 @login_required
@@ -24,6 +26,7 @@ def HaccpDelete(request,id):
     HaccpList = HaccpAdminData.objects.get(pk=id)
     if request.method == "POST":
         HaccpList.delete()
+        messages.success(request, 'Haccp deleted successful!')
         return redirect("/haccp/list")
     return render(request,'haccp/delete.html',{"locations":locations,'haccp':HaccpList})
 
@@ -81,4 +84,5 @@ def storagelocationAdminData(request, name, status):
             corrective_actions = CorrectiveAction.objects.filter(id__in=corrective_action)
             admin_data.corrective_action.set(corrective_actions)
     locations = Location.objects.all()
-    return render(request, 'storageName/storageData.html', {"locations": locations, "status": status, "name": name})
+    messages.success(request, f'{sub_storage_location} task stored successful!')
+    return render(request, 'haccp/list.html', {"locations": locations, "status": status, "name": name})
