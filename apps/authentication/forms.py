@@ -88,30 +88,98 @@ class UsernamePasswordResetForm(forms.Form):
             raise forms.ValidationError("The new password must be at least 10 characters long.")
         return password
 
+
 class UserUpdateForm(ModelForm):
     user = forms.ModelChoiceField(
         queryset=User.objects.all(),
         widget=forms.Select(attrs={'readonly': 'readonly', 'class': 'form-control'}),  # Use readonly
         required=False
     )
-
     role = forms.ChoiceField(
         choices=[
+            ('admin', 'Admin'),
             ('line_staff', 'Line Staff'),
             ('supervisors', 'Supervisors'),
             ('managers', 'Managers'),
-            ('admin', 'Admin'),
             ('e_learning', 'e-Learning'),
         ],
         widget=forms.Select(
             attrs={
                 "class": "form-control",
             }
-        )
+        ),
+        required=False  # Makes the field optional
     )
-    status = forms.BooleanField(required=False,
-                                widget=forms.CheckboxInput(attrs={'class': "form-control", 'status': "status"}))
+
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter the user's name",
+            }
+        ),
+        required=False
+    )
+
+    employee_id = forms.IntegerField(
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Employee ID",
+            }
+        ),
+        required=False
+    )
+
+    data_of_joining = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter the Date of Joining",
+            }
+        ),
+        required=False
+    )
+
+    job_title = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter the Job Title",
+            }
+        ),
+        required=False
+    )
+
+    status = forms.BooleanField(
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        required=False
+    )
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'role', 'status')
+        fields = ['user','role', 'name', 'employee_id', 'data_of_joining', 'job_title', 'status']
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['role', 'name', 'employee_id', 'data_of_joining', 'job_title', 'status']
+        widgets = {
+            'status': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'role': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'employee_id': forms.NumberInput(attrs={'class': 'form-control'}),
+            'data_of_joining': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'job_title': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_employee_id(self):
+        employee_id = self.cleaned_data.get('employee_id')
+        if not employee_id:
+            raise forms.ValidationError("Employee ID is required")
+        return employee_id

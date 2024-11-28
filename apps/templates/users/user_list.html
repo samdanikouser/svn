@@ -15,13 +15,15 @@
 <div style="display: flex; justify-content: space-between; padding: 20px;">
     <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
     <a href="{% url 'register' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Users</a>
+    <a href="{% url 'add_single_user_profile' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-secondary btn-sm">Add Single Profile</a>
+    <a href="{% url 'upload_excel_user_profiles' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-secondary btn-sm">Upload Excel</a>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header card-header-primary">
-                <h4 class="card-title ">Users</h4>
+                <h4 class="card-title">Users</h4>
                 <p class="card-category"></p>
             </div>
             <div class="card-body">
@@ -39,20 +41,20 @@
                         <tbody>
                         {% for user in users %}
                         <tr>
-                            <td style="color:black">{{forloop.counter}}</td>
-                            <td style="color:black">{{user.user.username}}</td>
-                            <td style="color:black">{{user.role}}</td>
-                            <td><input type="checkbox" disabled id="toggle{{ act.id }}" {% if act.status %}checked{% endif %}></td>
+                            <td style="color:black">{{ forloop.counter }}</td>
+                            <td style="color:black">{{ user.user.username }}</td>
+                            <td style="color:black">{{ user.role }}</td>
+                            <td><input type="checkbox" disabled id="toggle{{ user.id }}" {% if user.status %}checked{% endif %}></td>
                             <td>
-                                <a href="/user/delete/{{user.id}}"
+                                <a href="/user/delete/{{ user.id }}"
                                    class="btn btn-danger btn-sm">Delete</a>
-                                <a href="/user/update/{{user.id}}"
+                                <a href="/user/update/{{ user.id }}"
                                    class="btn btn-success btn-sm">Update</a>
-                                <a href="/user/update/password/{{user.id}}"
+                                <a href="/user/update/password/{{ user.id }}"
                                    class="btn btn-danger btn-sm">Change Password</a>
                             </td>
                         </tr>
-                        {%endfor%}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
