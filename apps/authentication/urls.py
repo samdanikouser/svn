@@ -4,8 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path
-from .views import login_view, register_user,daily_activity,password_change_view,home,update_user,delete_user,list_user,add_single_user_profile,upload_excel_user_profiles
-from django.contrib.auth.views import LogoutView
+from .views import login_view, user_logout,register_user,password_change_view,home,update_user,delete_user,list_user,add_single_user_profile,upload_excel_user_profiles
 
 urlpatterns = [
     path('login/', login_view, name="login"),
@@ -16,10 +15,6 @@ urlpatterns = [
     path('user/list/', list_user, name="list_user"),
     path('userprofile/add-single/', add_single_user_profile, name='add_single_user_profile'),
     path('userprofile/upload-excel/', upload_excel_user_profiles, name='upload_excel_user_profiles'),
-    path("logout/", LogoutView.as_view(), name="logout"),
-    path('daily_activity/', daily_activity, name='daily_activity'),
+    path("logout/", user_logout, name="logout"),
     path('',home, name='home'),
-
-    # path('/list', views.user_list, name='user_list'),
-    # path('/delete/<int:id>', views.delete_user, name='delete_user'),
 ]

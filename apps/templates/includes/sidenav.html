@@ -16,10 +16,13 @@
                 </a>
             </li>
             <li class="nav-item {% if 'haccp' in segment %} active {% endif %}">
+                {% if user == 'admin' %}
                 <a href="javascript:void(0)" class="nav-link toggle-dropdown">
                     <i class="material-icons">fact_check</i>
                     <p>Haccp<span class="caret"></span></p>
                 </a>
+                {% endif %}
+
                 <ul class="dropdown-container" style="display: none;">
                     {% for location in locations %}
                     <li>

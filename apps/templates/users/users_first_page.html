@@ -1,12 +1,10 @@
+{% load static %}
 {% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Activity</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         /* Custom Styles */
@@ -141,6 +139,45 @@
     cursor: pointer;
     margin-top: 20px;
 }
+
+/* Modal background */
+#correctiveModal {
+    position: fixed;  /* Fixed position to keep it on top */
+    top: 0;
+    left: 0;
+    width: 100%;      /* Cover the entire viewport */
+    height: 100%;     /* Cover the entire viewport */
+    background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent background */
+    display: none;    /* Initially hidden */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;  /* Adjust width as needed */
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+/* Modal buttons */
+button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
     </style>
 </head>
 <body>
@@ -181,9 +218,7 @@
                                class="cool-input" placeholder="Max">
                     </label>
 
-                    <button onclick="checkAndSave({{ item.id }}, 'min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', 'max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}')"
-                            class="cool-input save-btn">Save
-                    </button>
+                    <button onclick="checkAndSave({{item.id}}, 'min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', 'max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}')" class="cool-input save-btn">Save</button>
                 </div>
             </div>
             {% endfor %}
@@ -195,18 +230,16 @@
     <div id="correctiveModal" style="display:none;">
         <div class="modal-content">
             <div id="correctiveMessage"></div>
+            <div id="correctiveActionsList"></div>
+            <textarea id="actionComment" placeholder="Add your comments for selected corrective actions"></textarea>
             <button onclick="confirmSave()">Save</button>
             <button onclick="closeModal()">Cancel</button>
         </div>
     </div>
+    
 
 </div>
 </div>
-
-<!-- Bootstrap JS and Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
 <script>
     // Toggle function for accordion-style activity content
     function toggleAccordion(locationId) {
@@ -243,7 +276,7 @@ async function checkAndSave(itemId, minInputId, maxInputId) {
     const maxValue = parseFloat(document.getElementById(maxInputId).value);
 
     // Send item ID and entered min/max values to the backend to check the range
-    const response = await fetch('/check-range/', {
+    const response = await fetch('user/check-range/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -258,61 +291,77 @@ async function checkAndSave(itemId, minInputId, maxInputId) {
 
     const data = await response.json();
 
-    // Check if the entered values are out of range
     if (data.out_of_range) {
-        // Display corrective actions in the modal
-        const correctiveMessageDiv = document.getElementById('correctiveMessage');
-        correctiveMessageDiv.innerHTML = ''; // Clear previous messages
+    // Display corrective actions in the modal
+    const correctiveMessageDiv = document.getElementById('correctiveMessage');
+    correctiveMessageDiv.innerHTML = ''; // Clear previous messages
 
-        data.corrective_actions.forEach(action => {
-            const actionItem = document.createElement('p');
-            actionItem.innerText = action;  // Display each corrective action
-            correctiveMessageDiv.appendChild(actionItem);
-        });
+    const correctiveActionsList = document.getElementById('correctiveActionsList');
+    correctiveActionsList.innerHTML = ''; // Clear previous actions
 
-        document.getElementById('correctiveModal').style.display = 'block';
+    // Create checkboxes for each corrective action
+    data.corrective_actions.forEach(action => {
+        const actionItem = document.createElement('div');
+        actionItem.innerHTML = `
+            <input type="checkbox" id="action_${action.id}" value="${action.id}" />
+            <label for="action_${action.id}">${action.name}</label>
+        `;
+        correctiveActionsList.appendChild(actionItem);
+    });
 
-        // Store data to save later in case corrective action is confirmed
-        window.dataToSave = { itemId, minValue, maxValue, correctiveActions: data.corrective_actions };
-    } else {
-        // Save data directly if values are in range
-        saveData(itemId, minValue, maxValue, null);
-    }
+    // Show modal
+    document.getElementById('correctiveModal').style.display = 'block';
+
+    // Store data for later use
+    window.dataToSave = { itemId, minValue, maxValue, correctiveActions: data.corrective_actions };
+} else {
+    // Save data directly if values are in range
+    saveData(itemId, minValue, maxValue, null);
+}
 }
 
 // Function to save data after corrective action is confirmed
-function confirmSave() {
-    if (window.dataToSave) {
-        saveData(
-            window.dataToSave.itemId,
-            window.dataToSave.minValue,
-            window.dataToSave.maxValue,
-            window.dataToSave.correctiveActions
-        );
-    }
+async function confirmSave() {
+    // Collect selected checkboxes
+    const selectedActions = [];
+    window.dataToSave.correctiveActions.forEach(action => {
+        const checkbox = document.getElementById(`action_${action.id}`);
+        if (checkbox.checked) {
+            selectedActions.push(action.id); // Add selected action ID
+        }
+    });
+
+    // Get the comment from the single text box
+    const actionComment = document.getElementById('actionComment').value;
+
+    // Call saveData function with the selected actions and the comment
+    const { itemId, minValue, maxValue } = window.dataToSave;
+    saveData(itemId, minValue, maxValue, { selectedActions, comment: actionComment });
 }
 
 // Function to send data to backend to save it
-async function saveData(itemId, minValue, maxValue, correctiveActions) {
-    const response = await fetch('/save-data/', {
+async function saveData(itemId, minValue, maxValue, correctiveData) {
+    const response = await fetch('user/save-data/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCookie('csrftoken') // CSRF token for Django
         },
         body: JSON.stringify({
             item_id: itemId,
-            min_value: minValue,
-            max_value: maxValue,
-            corrective_actions: correctiveActions
+            entered_min: minValue,
+            entered_max: maxValue,
+            corrective_actions: correctiveData.selectedActions,
+            comment: correctiveData.comment
         })
     });
 
-    if (response.ok) {
+    const result = await response.json();
+    if (result.success) {
+        console.log('Data saved successfully!');
         closeModal();
-        alert("Data saved successfully!");
     } else {
-        alert("Failed to save data.");
+        console.error('Error saving data:', result.error);
     }
 }
 

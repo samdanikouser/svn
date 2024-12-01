@@ -14,9 +14,9 @@
 
 <div style="display: flex; justify-content: space-between; padding: 20px;">
     <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
-    <a href="{% url 'register' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Users</a>
-    <a href="{% url 'add_single_user_profile' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-secondary btn-sm">Add Single Profile</a>
-    <a href="{% url 'upload_excel_user_profiles' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-secondary btn-sm">Upload Excel</a>
+    <a href="{% url 'register' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Login Users</a>
+    <a href="{% url 'add_single_user_profile' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm"">Add Single Profile</a>
+    <a href="{% url 'upload_excel_user_profiles' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm"">Upload Excel</a>
 </div>
 
 <div class="row">
@@ -31,8 +31,9 @@
                     <table class="table">
                         <thead class=" text-primary">
                         <tr>
-                            <th scope="col">ID</th>
+                            <th scope="col">S.NO</th>
                             <th scope="col">User NAME</th>
+                            <th scope="col">EMPLOYEE NAME</th>
                             <th scope="col">Role</th>
                             <th scope="col">STATUS</th>
                             <th scope="col">ACTION</th>
@@ -43,6 +44,7 @@
                         <tr>
                             <td style="color:black">{{ forloop.counter }}</td>
                             <td style="color:black">{{ user.user.username }}</td>
+                            <td style="color:black">{{ user.name }}</td>
                             <td style="color:black">{{ user.role }}</td>
                             <td><input type="checkbox" disabled id="toggle{{ user.id }}" {% if user.status %}checked{% endif %}></td>
                             <td>
@@ -50,7 +52,7 @@
                                    class="btn btn-danger btn-sm">Delete</a>
                                 <a href="/user/update/{{ user.id }}"
                                    class="btn btn-success btn-sm">Update</a>
-                                <a href="/user/update/password/{{ user.id }}"
+                                <a href="/user/update/password/{{ user.user.id }}"
                                    class="btn btn-danger btn-sm">Change Password</a>
                             </td>
                         </tr>

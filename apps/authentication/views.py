@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 # Create your views here.
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login,logout
 from .forms import LoginForm, SignUpForm, UsernamePasswordResetForm, UserUpdateForm,UserProfileForm
 from .decorators import role_required
 from .models import UserProfile
@@ -14,8 +14,6 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.models import User
 import pandas as pd
-
-
 
 from ..haccp.models import HaccpAdminData
 from ..location.models import Location
@@ -53,13 +51,13 @@ def login_view(request):
     return render(request, "accounts/login.html", {"form": form, "error_message": error_message,"locations":locations})
 
 
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+
 @login_required
-def daily_activity(request):
-    location = Location.objects.get(id=request.GET.get('location')).name
-    daily_activity = HaccpAdminData.objects.filter(storage_location = Location.objects.get(id=request.GET.get('location')))
-    return render(request, 'users_first_page.html',{"location":location,"daily_activity":daily_activity})
-
-
+@role_required(allowed_roles=['admin','managers'])
 def register_user(request):
     msg = None
     success = False
@@ -70,8 +68,7 @@ def register_user(request):
         if form.is_valid():
             form.save()
             user = User.objects.get(username=request.POST["username"])
-            Userprofile = UserProfile.objects.get(user=user)
-            Userprofile.role = request.POST["selected_options"]
+            Userprofile = UserProfile.objects.create(user=user)
             Userprofile.save()
             messages.success(request, "User has been Registered successfully!")
             return redirect("register")
@@ -113,8 +110,9 @@ def password_change_view(request, id):
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def home(request):
+    user = UserProfile.objects.get(user=request.user).role
     locations= Location.objects.all()
-    return render(request, 'home/index.html',{"locations":locations})
+    return render(request, 'home/index.html',{"locations":locations,"user":user})
 
 
 
@@ -140,7 +138,6 @@ def delete_user(request, id):
                   {'user': user,"locations":locations})
 
 
-# update employee
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def update_user(request, id):
@@ -166,24 +163,13 @@ def add_single_user_profile(request):
         form = UserProfileForm(request.POST)
         if form.is_valid():
             user_profile = form.save(commit=False)
-            # Check if user already exists
-            try:
-                user = User.objects.get(username=str(user_profile.employee_id))
-                # Check if the UserProfile is already created
-                if not UserProfile.objects.filter(user=user).exists():
-                    user_profile.user = user  # Link the existing user
-                    user_profile.save()  # Save the profile
-                else:
-                    # Optionally, you can handle this case (e.g., show an error message)
-                    return redirect("/user/list")
-            except User.DoesNotExist:
-                user = User.objects.create_user(
-                    username=str(user_profile.employee_id),  # Use employee_id as the username
-                    password=None  # No password set yet; this user can be inactive
+            user = User.objects.create_user(
+                    username=str(user_profile.employee_id),
+                    password=None 
                 )
-                user_profile.user = user  # Link the new user to the profile
-                user_profile.save()  # Save the profile
-
+            user_profile.user = user  
+            user_profile.save()  
+            messages.success(request, "Profile Created successfully!")
             return redirect("/user/list")
     else:
         form = UserProfileForm()
@@ -193,19 +179,21 @@ def add_single_user_profile(request):
 @login_required
 @role_required(allowed_roles=['admin', 'managers'])
 def upload_excel_user_profiles(request):
+    locations = Location.objects.all()
     if request.method == 'POST' and request.FILES['excel_file']:
         excel_file = request.FILES['excel_file']
         df = pd.read_excel(excel_file)
+        print(df)
         
         for _, row in df.iterrows():
             # Create a User with employee_id as the username
             user = User.objects.create_user(
-                username=str(row['employee_id']),  # Use employee_id as username
+                username=str(row['employee_id']),
                 password=None  # No password set
             )
             
             user_profile = UserProfile.objects.create(
-                user=user,  # Link the newly created user
+                user=user,
                 name=row['name'],
                 role=row['role'],
                 employee_id=row['employee_id'],
@@ -216,4 +204,4 @@ def upload_excel_user_profiles(request):
         
         return redirect("/user/list")
     
-    return render(request, 'users/upload_excel_user_profiles.html')
+    return render(request, 'users/upload_excel_user_profiles.html'),{"locations":locations}

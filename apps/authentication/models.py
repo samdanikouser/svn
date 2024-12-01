@@ -6,9 +6,9 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     """User Profile model, created on creating user while registration"""
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True,blank=True)
     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('line_staff', 'Line Staff'),
-                                                    ('supervisors', 'Supervisors'),('managers','Managers'),('e_learning','e-Learning')])
+                                                    ('supervisors', 'Supervisors'),('managers','Managers'),('e_learning','e-Learning')],null=True,blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     employee_id = models.IntegerField(unique=True, null=True, blank=True)
     data_of_joining = models.DateField(null=True, blank=True)  # Changed to DateField
@@ -23,14 +23,13 @@ class UserProfile(models.Model):
         return f"{self.user.username}"
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    """Signal function used to create entry in user profile table on creating a user."""
-    if created and not hasattr(instance, 'userprofile'):
-        UserProfile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     """Signal function used to create entry in user profile table on creating a entry in user table(model)"""
+#     if created:
+#         UserProfile.objects.create(user=instance)
 
-
-post_save.connect(create_user_profile, sender=User)
+# post_save.connect(create_user_profile, sender=User)
 
 
 
