@@ -14,28 +14,25 @@ from django.contrib import messages
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def HaccpList(request):
-    locations = Location.objects.all()
     HaccpList = HaccpAdminData.objects.all()
-    return render(request,'haccp/list.html',{'hccp_list':HaccpList,"locations":locations})
+    return render(request,'haccp/list.html',{'hccp_list':HaccpList})
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def HaccpDelete(request,id):
-    locations = Location.objects.all()
     HaccpList = HaccpAdminData.objects.get(pk=id)
     if request.method == "POST":
         HaccpList.delete()
         messages.success(request, 'Haccp deleted successful!')
         return redirect("/haccp/list")
-    return render(request,'haccp/delete.html',{"locations":locations,'haccp':HaccpList})
+    return render(request,'haccp/delete.html',{'haccp':HaccpList})
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def haccpHome(request, name):
-    locations = Location.objects.all()
-    context = {"name": name, "locations": locations}
+    context = {"name": name}
     html_template = loader.get_template('haccp/haccphome.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -43,10 +40,9 @@ def haccpHome(request, name):
 @role_required(allowed_roles=['admin','managers'])
 def storagelocation(request, name, status):
     corrective_action = CorrectiveAction.objects.filter(status=True)
-    locations = Location.objects.filter(status=True)
     roles = Roles.objects.all()
     return render(request, 'storageName/storageData.html',
-                  {"roles": roles, "name": name, "status": status, "locations": locations,
+                  {"roles": roles, "name": name, "status": status,
                    "corrective_action": corrective_action})
 
 
@@ -83,6 +79,5 @@ def storagelocationAdminData(request, name, status):
             admin_data.save()
             corrective_actions = CorrectiveAction.objects.filter(id__in=corrective_action)
             admin_data.corrective_action.set(corrective_actions)
-    locations = Location.objects.all()
     messages.success(request, f'{sub_storage_location} task stored successful!')
-    return render(request, 'haccp/list.html', {"locations": locations, "status": status, "name": name})
+    return render(request, 'haccp/list.html', {"status": status, "name": name})

@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'apps.correctiveaction',
     'apps.usersapp',
     'apps.authentication',
-    'apps.roles'
+    'apps.roles',
+    'apps.personalhygiene'
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.authentication.context_processors.user_role'
             ],
         },
     },

@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     """User Profile model, created on creating user while registration"""
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True,blank=True)
     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('line_staff', 'Line Staff'),
-                                                    ('supervisors', 'Supervisors'),('managers','Managers'),('e_learning','e-Learning')],null=True,blank=True)
+                                                    ('supervisor', 'Supervisor'),('managers','Managers'),('e_learning','e-Learning')],null=True,blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     employee_id = models.IntegerField(unique=True, null=True, blank=True)
     data_of_joining = models.DateField(null=True, blank=True)  # Changed to DateField

@@ -99,7 +99,7 @@ class UserUpdateForm(ModelForm):
         choices=[
             ('admin', 'Admin'),
             ('line_staff', 'Line Staff'),
-            ('supervisors', 'Supervisors'),
+            ('supervisor', 'Supervisor'),
             ('managers', 'Managers'),
             ('e_learning', 'e-Learning'),
         ],

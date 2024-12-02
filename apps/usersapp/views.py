@@ -1,21 +1,40 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
+from apps.authentication.decorators import role_required
+from apps.authentication.models import UserProfile
+from apps.correctiveaction.models import CorrectiveAction
 from apps.haccp.models import HaccpAdminData
 from apps.location.models import Location
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
+from apps.usersapp.models import DailyUpdates
+from django.contrib import messages
 
 
-# Create your views here.
+@login_required
+@role_required(allowed_roles=['admin','managers','supervisor'])
+def pending_approvals(request):
+        user_data = DailyUpdates.objects.filter(supervisor_approved_by__isnull=True)
+        return render(request, 'pending_approvals/pending_approvals.html',{"user_data":user_data})
 
-def usersFirstDisplay(request):
-    locations = Location.objects.filter(status=True)
-    return render(request, 'users/users_first_page.html', {'locations': locations})
 
-def userLogin(request,name):
-    return render(request, 'login.html', {'name': name})
+@login_required
+@role_required(allowed_roles=['admin','managers','supervisor'])
+def approve_tasks(request):
+    user_data = DailyUpdates.objects.filter(supervisor_approved_by__isnull=True)
+
+    if request.method == 'POST':
+        selected_task_ids = request.POST.getlist('selected_tasks')  # List of selected task IDs
+        supervisor = UserProfile.objects.get(user=request.user).name
+        if selected_task_ids:
+            tasks_to_approve = DailyUpdates.objects.filter(id__in=selected_task_ids)
+            tasks_to_approve.update(supervisor_approved_status='approved',supervisor_approved_by=supervisor)
+            messages.success(request, f'Approved successful!')
+            return render(request, 'pending_approvals/pending_approvals.html',{"user_data":user_data})
+        return render(request, 'pending_approvals/pending_approvals.html',{"user_data":user_data})
+
 
 
 @login_required
@@ -45,14 +64,28 @@ def check_range(request):
 @csrf_exempt
 def save_data(request):
     if request.method == 'POST':
+        print("samdani")
         data = json.loads(request.body)
-        item_id = data['item_id']
-        min_value = data['entered_min']
-        max_value = data['entered_max']
-        corrective_actions = data.get('corrective_actions', [])
-        user_text = data['comment']
-
-        # Save the data (logic here)
-        # YourModel.objects.filter(id=item_id).update(min=min_value, max=max_value, corrective_actions=corrective_actions)
+        user_data = DailyUpdates()
+        user_data.haccp_link = HaccpAdminData.objects.get(id=int(data['item_id']))
+        user_data.min_value = data['entered_min']
+        user_data.max_value = data['entered_max']
+        user_data.haccp_link_time_given = data['time']
+        if 'corrective_actions' in data:
+            for actions in data.get('corrective_actions', []):
+                corrective_action_name = CorrectiveAction.objects.get(id=int(actions)).name
+                if user_data.corrective_actions:
+                    user_data.corrective_actions += f", {corrective_action_name}"
+                else:
+                    user_data.corrective_actions = corrective_action_name
+            user_data.text_message = data['comment']
+        user_data.created_by = UserProfile.objects.get(user = request.user)
+        user_data.save()
 
         return JsonResponse({"success": True})
+
+
+def check_daily_update(request):
+    user_data = DailyUpdates.objects.filter().values_list('haccp_link_time_given','haccp_link__used_for')
+    data_to_send = [{'id':data[1]+str(data[0])[0:5]} for data in user_data]
+    return JsonResponse({'data_exists': data_to_send})

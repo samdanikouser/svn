@@ -1,0 +1,193 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+}
+
+.navbar-custom {
+    background-color: #333;
+    color: #fff;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+    color: #fff;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #f8f9fa;
+}
+
+.container {
+    margin-top: 30px;
+}
+
+.location-btn {
+    cursor: pointer;
+}
+
+/* Accordion Styles */
+.activity-section {
+    margin-bottom: 20px;
+}
+
+.accordion-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #04AA6D;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.accordion-btn:hover {
+    background-color: #0056b3;
+}
+
+.accordion-btn .icon {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.accordion-btn.active .icon {
+    transform: rotate(180deg);
+}
+
+.activity-content {
+    display: none;
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.activity-content.open {
+    display: block;
+}
+
+.activity-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.activity-title {
+    font-size: 1.2em;
+    color: #333;
+    flex: 1;
+}
+
+.activity-inputs {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.input-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.cool-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cool-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Save Button */
+.save-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.save-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.save-btn:hover {
+    background-color: #45a049;
+}
+
+.save-btn:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+
+/* Modal Styles */
+#correctiveModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    position: relative;
+    overflow-y: auto;
+}
+
+.modal-content button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}

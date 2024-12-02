@@ -1,394 +1,262 @@
+{% extends "layouts/base.html" %}
 {% load static %}
+{% block title %}Daily Actions{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{% static 'assets/css/user_first_page.css' %}">
+{% endblock stylesheets %}
+
 {% block content %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Location Activity</title>
-
-    <style>
-        /* Custom Styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-        }
-
-        .navbar-custom {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
-            color: #fff;
-        }
-
-        .navbar-custom .nav-link:hover {
-            color: #f8f9fa;
-        }
-
-        .container {
-            margin-top: 30px;
-        }
-
-        .location-btn {
-            cursor: pointer;
-        }
-
-        /* Accordion animation */
-        .activity-content {
-            display: none;
-            background-color: #f1f1f1;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .activity-content.open {
-            display: block;
-        }
-        .activity-section {
-            margin-bottom: 20px; /* Add space between the activity sections */
-        }
-        .activity-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .accordion-btn {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #04AA6D;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            width: 100%;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .accordion-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .accordion-btn .icon {
-            font-size: 20px;
-        }
-
-        .accordion-btn.active .icon {
-            transform: rotate(180deg);
-            transition: transform 0.3s ease;
-        }
-
-        .activity-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: bold;
-    color: #333;
-}
-
-.activity-title {
-    font-size: 1.2em;
-    color: #333;
-    flex: 1;
-}
-
-.activity-inputs {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    font-size: 0.9em;
-    color: #666;
-}
-
-.input-label {
-    font-weight: 500;
-    color: #555;
-}
-
-.cool-input {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 0.9em;
-    transition: all 0.2s ease;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.cool-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
-}
-        .save-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-/* Modal background */
-#correctiveModal {
-    position: fixed;  /* Fixed position to keep it on top */
-    top: 0;
-    left: 0;
-    width: 100%;      /* Cover the entire viewport */
-    height: 100%;     /* Cover the entire viewport */
-    background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent background */
-    display: none;    /* Initially hidden */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Modal content */
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 50%;  /* Adjust width as needed */
-    max-width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-}
-
-/* Modal buttons */
-button {
-    margin-top: 10px;
-    padding: 10px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-    </style>
-</head>
-<body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-custom">
-    <header>
-        <a href="{% url 'logout' %}" class="logout-button">Logout</a>
-    </header>
-</nav>
-<!-- Main Content -->
-<div class="container">
-    <div class="px-5 ms-xl-4">
-        <i class="fas fa-crow fa-2x me-3 pt-5 mt-xl-4" style="color: #709085;"></i>
-        <span class="h1 fw-bold mb-0" style="font-family:Fantasy">{{location}} Temperature log</span>
-    </div>
-    {% for item in daily_activity %}
-    <div id="location{{ forloop.counter }}" class="activity-section">
-        <div class="accordion-btn" onclick="toggleActivity('location{{ forloop.counter }}')">
-            <span>Today's Activity - {{ item.used_for }}</span>
-            <span class="icon">&#x25BC;</span>
-        </div>
-        <div class="activity-content">
-            {% for time in item.time_on %}
-            <div class="activity-card" style="margin-bottom: 15px;">
-                <div class="activity-header">
-                    <h3 class="activity-title">At {{ time }}</h3>
-                </div>
-                <div class="activity-inputs">
-                    <label class="input-group">
-                        <span class="input-label">Min</span>
-                        <input type="text" id="min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
-                               class="cool-input" placeholder="Min">
-                    </label>
-                    <label class="input-group">
-                        <span class="input-label">Max</span>
-                        <input type="text" id="max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
-                               class="cool-input" placeholder="Max">
-                    </label>
-
-                    <button onclick="checkAndSave({{item.id}}, 'min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', 'max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}')" class="cool-input save-btn">Save</button>
-                </div>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
             </div>
-            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="row" style="padding-top: 65px;">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">{{location}} Temperature log</h4>
+            </div>
+            <div class="card-body">
+                    <div class="mb-3">
+                        {% for item in daily_activity %}
+                        <div id="location{{ forloop.counter }}" class="activity-section">
+                            <div class="accordion-btn" onclick="toggleActivity('location{{ forloop.counter }}')">
+                                <span>Today's Activity - {{ item.used_for }}</span>
+                                <span class="icon">&#x25BC;</span>
+                            </div>
+                            <div class="activity-content table-responsive"">
+                                {% for time in item.time_on %}
+                                <div id="{{ item.used_for }}{{ time }}" class="activity-card" style="margin-bottom: 15px;">
+                                    <div class="activity-header">
+                                        <h3 class="activity-title">Data to enter at {{ time }}</h3>
+                                    </div>
+                                    <div class="activity-inputs">
+                                        <label class="input-group">
+                                            <span class="input-label">Min</span>
+                                            <input type="text" id="min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="cool-input" placeholder="Min" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                        </label>
+                                        <label class="input-group">
+                                            <span class="input-label">Max</span>
+                                            <input type="text" id="max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                                                class="cool-input" placeholder="Max"     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                        </label>
+                                        <label class="save-btn-container">
+                                            <button onclick="checkAndSave({{ item.id }}, 'min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', 'max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', '{{ time }}')" 
+                                                class="cool-input save-btn">Save</button>
+                                        </label>    
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    <div id="correctiveModal" style="display:none;">
+                        <div class="modal-content">
+                            <div id="correctiveMessage"></div>
+                            <div id="correctiveActionsList"></div>
+                            <textarea id="actionComment" placeholder="Add your comments for selected corrective actions"></textarea>
+                            <button onclick="confirmSave()">Save</button>
+                            <button onclick="closeModal()">Cancel</button>
+                        </div>
+                    </div>
+                 </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
-
-    <!-- Modal -->
-    <div id="correctiveModal" style="display:none;">
-        <div class="modal-content">
-            <div id="correctiveMessage"></div>
-            <div id="correctiveActionsList"></div>
-            <textarea id="actionComment" placeholder="Add your comments for selected corrective actions"></textarea>
-            <button onclick="confirmSave()">Save</button>
-            <button onclick="closeModal()">Cancel</button>
-        </div>
-    </div>
-    
-
 </div>
-</div>
+{% endblock %}
+{% block javascripts %}
 <script>
-    // Toggle function for accordion-style activity content
-    function toggleAccordion(locationId) {
-        var content = document.querySelector('#' + locationId + ' .activity-content');
-        var button = document.querySelector('#' + locationId + ' .accordion-btn');
+// Toggle function for accordion-style activity content
+function toggleAccordion(locationId) {
+    var content = document.querySelector('#' + locationId + ' .activity-content');
+    var button = document.querySelector('#' + locationId + ' .accordion-btn');
 
-        content.classList.toggle('open');
-        button.classList.toggle('active');
-    }
-
-    // Toggle the visibility of location-specific content
-    function toggleActivity(locationId) {
-        // Close all activities
-        var allActivities = document.querySelectorAll('.activity-section .activity-content');
-        allActivities.forEach(function(activity) {
-            activity.classList.remove('open');
-        });
-        var allButtons = document.querySelectorAll('.accordion-btn');
-        allButtons.forEach(function(button) {
-            button.classList.remove('active');
-        });
-
-        // Show the selected activity
-        var activity = document.querySelector('#' + locationId + ' .activity-content');
-        var button = document.querySelector('#' + locationId + ' .accordion-btn');
-
-        activity.classList.toggle('open');
-        button.classList.toggle('active');
-    }
-
-    // Function to handle Save button click
-async function checkAndSave(itemId, minInputId, maxInputId) {
-    const minValue = parseFloat(document.getElementById(minInputId).value);
-    const maxValue = parseFloat(document.getElementById(maxInputId).value);
-
-    // Send item ID and entered min/max values to the backend to check the range
-    const response = await fetch('user/check-range/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')  // CSRF token for Django
-        },
-        body: JSON.stringify({
-            item_id: itemId,
-            entered_min: minValue,
-            entered_max: maxValue
-        })
-    });
-
-    const data = await response.json();
-
-    if (data.out_of_range) {
-    // Display corrective actions in the modal
-    const correctiveMessageDiv = document.getElementById('correctiveMessage');
-    correctiveMessageDiv.innerHTML = ''; // Clear previous messages
-
-    const correctiveActionsList = document.getElementById('correctiveActionsList');
-    correctiveActionsList.innerHTML = ''; // Clear previous actions
-
-    // Create checkboxes for each corrective action
-    data.corrective_actions.forEach(action => {
-        const actionItem = document.createElement('div');
-        actionItem.innerHTML = `
-            <input type="checkbox" id="action_${action.id}" value="${action.id}" />
-            <label for="action_${action.id}">${action.name}</label>
-        `;
-        correctiveActionsList.appendChild(actionItem);
-    });
-
-    // Show modal
-    document.getElementById('correctiveModal').style.display = 'block';
-
-    // Store data for later use
-    window.dataToSave = { itemId, minValue, maxValue, correctiveActions: data.corrective_actions };
-} else {
-    // Save data directly if values are in range
-    saveData(itemId, minValue, maxValue, null);
+    content.classList.toggle('open');
+    button.classList.toggle('active');
 }
+
+// Toggle the visibility of location-specific content
+function toggleActivity(locationId) {
+    // Close all activities
+    var allActivities = document.querySelectorAll('.activity-section .activity-content');
+    allActivities.forEach(function(activity) {
+        activity.classList.remove('open');
+    });
+    var allButtons = document.querySelectorAll('.accordion-btn');
+    allButtons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+
+    // Show the selected activity
+    var activity = document.querySelector('#' + locationId + ' .activity-content');
+    var button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+    activity.classList.toggle('open');
+    button.classList.toggle('active');
+}
+
+// Function to handle Save button click
+async function checkAndSave(itemId, minInputId, maxInputId, timeValue) {
+const minValue = parseFloat(document.getElementById(minInputId).value);
+const maxValue = parseFloat(document.getElementById(maxInputId).value);
+
+// Send item ID and entered min/max values to the backend to check the range
+const response = await fetch('user/check-range/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')  // CSRF token for Django
+    },
+    body: JSON.stringify({
+        item_id: itemId,
+        entered_min: minValue,
+        entered_max: maxValue
+    })
+});
+
+const data = await response.json();
+
+if (data.out_of_range) {
+// Display corrective actions in the modal
+const correctiveMessageDiv = document.getElementById('correctiveMessage');
+correctiveMessageDiv.innerHTML = ''; // Clear previous messages
+
+const correctiveActionsList = document.getElementById('correctiveActionsList');
+correctiveActionsList.innerHTML = ''; // Clear previous actions
+
+// Create checkboxes for each corrective action
+data.corrective_actions.forEach(action => {
+    const actionItem = document.createElement('div');
+    actionItem.innerHTML = `
+        <input type="checkbox" id="action_${action.id}" value="${action.id}" />
+        <label for="action_${action.id}">${action.name}</label>
+    `;
+    correctiveActionsList.appendChild(actionItem);
+});
+
+// Show modal
+document.getElementById('correctiveModal').style.display = 'flex';
+
+// Store data for later use
+window.dataToSave = { itemId, minValue, maxValue, timeValue, correctiveActions: data.corrective_actions };
+} else {
+// Save data directly if values are in range
+saveData(itemId, minValue, maxValue, timeValue, null);
+}
+
 }
 
 // Function to save data after corrective action is confirmed
 async function confirmSave() {
-    // Collect selected checkboxes
-    const selectedActions = [];
-    window.dataToSave.correctiveActions.forEach(action => {
-        const checkbox = document.getElementById(`action_${action.id}`);
-        if (checkbox.checked) {
-            selectedActions.push(action.id); // Add selected action ID
-        }
-    });
+// Collect selected checkboxes
+const selectedActions = [];
+window.dataToSave.correctiveActions.forEach(action => {
+    const checkbox = document.getElementById(`action_${action.id}`);
+    if (checkbox.checked) {
+        selectedActions.push(action.id); // Add selected action ID
+    }
+});
 
-    // Get the comment from the single text box
-    const actionComment = document.getElementById('actionComment').value;
+// Get the comment from the single text box
+const actionComment = document.getElementById('actionComment').value;
 
-    // Call saveData function with the selected actions and the comment
-    const { itemId, minValue, maxValue } = window.dataToSave;
-    saveData(itemId, minValue, maxValue, { selectedActions, comment: actionComment });
+// Call saveData function with the selected actions and the comment
+const { itemId, minValue, maxValue, timeValue } = window.dataToSave;
+saveData(itemId, minValue, maxValue, timeValue, { selectedActions, comment: actionComment });
 }
 
 // Function to send data to backend to save it
-async function saveData(itemId, minValue, maxValue, correctiveData) {
-    const response = await fetch('user/save-data/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken') // CSRF token for Django
-        },
-        body: JSON.stringify({
-            item_id: itemId,
-            entered_min: minValue,
-            entered_max: maxValue,
-            corrective_actions: correctiveData.selectedActions,
-            comment: correctiveData.comment
-        })
-    });
+async function saveData(itemId, minValue, maxValue, timeValue, correctiveData) {
+if(correctiveData){
+    data_to_send =  JSON.stringify({
+        item_id: itemId,
+        entered_min: minValue,
+        entered_max: maxValue,
+        corrective_actions: correctiveData.selectedActions,
+        comment: correctiveData.comment,
+        time: timeValue
 
-    const result = await response.json();
-    if (result.success) {
-        console.log('Data saved successfully!');
-        closeModal();
-    } else {
-        console.error('Error saving data:', result.error);
-    }
+    })
+}else{
+    data_to_send =  data_to_send =  JSON.stringify({
+        item_id: itemId,
+        entered_min: minValue,
+        entered_max: maxValue,
+        time: timeValue
+    })
+}
+const response = await fetch('user/save-data/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken') // CSRF token for Django
+    },
+    body:data_to_send
+});
+
+const result = await response.json();
+if (result.success) {
+    alert('Data saved successfully!');
+    closeModal();
+    location.reload();
+} else {
+    alert('Error saving data:', result.error);
+}
 }
 
 // Function to close the modal
 function closeModal() {
-    document.getElementById('correctiveModal').style.display = 'none';
+document.getElementById('correctiveModal').style.display = 'none';
 }
 
 // Helper function to get CSRF token (for Django)
 function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+let cookieValue = null;
+if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
         }
     }
-    return cookieValue;
+}
+return cookieValue;
 }
 
+
+
+document.addEventListener("DOMContentLoaded", async function() {
+// Get the current time (in hour:minute format)
+const currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
+// Send a request to the backend to check if data exists for today's time
+const response = await fetch('user/check-daily-update/', {
+    method: 'GET',  // Use 'GET' method as no data is being sent in the body
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+const data = await response.json();
+if(data.data_exists){
+
+    for (let i = 0; i < data.data_exists.length; i++) {
+        const element = document.getElementById(data.data_exists[i].id);
+        if (element) {
+        element.style.display = "none"; // Hide the element
+    } else {
+        console.log(`Element with ID ${data.data_exists[i]} not found.`);
+    }
+    }
+}
+});
 </script>
-
-</body>
-</html>
-{% endblock %}
-
+{% endblock javascripts %}

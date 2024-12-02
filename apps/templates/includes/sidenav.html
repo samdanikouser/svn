@@ -4,7 +4,7 @@
     <div class="logo">
         <a target="_blank" rel="noopener noreferrer"
            href="https://svnkw.com/" class="simple-text logo-normal">
-            <img src="/static/assets/img/login/svnlogo.jpeg" alt="Logo" style="max-height: 50px; display: block; margin: auto;">
+           <img src="/static/assets/img/login/svnlogo.jpeg" alt="Logo" style="max-height: 50px; display: block; margin: auto;">
         </a>
     </div>
     <div class="sidebar-wrapper">
@@ -15,15 +15,13 @@
                     <p>Dashboard</p>
                 </a>
             </li>
+            {% if user_role == 'admin' or user_role == 'manager' %}
             <li class="nav-item {% if 'haccp' in segment %} active {% endif %}">
-                {% if user == 'admin' %}
-                <a href="javascript:void(0)" class="nav-link toggle-dropdown">
+                <a href="javascript:void(0)" class="nav-link toggle-dropdown" onclick="toggleDropdown('haccp-dropdown')">
                     <i class="material-icons">fact_check</i>
                     <p>Haccp<span class="caret"></span></p>
                 </a>
-                {% endif %}
-
-                <ul class="dropdown-container" style="display: none;">
+                <ul class="dropdown-container" id="haccp-dropdown" style="display: none;">
                     {% for location in locations %}
                     <li>
                         <a href="{% url 'haccp_home' location %}" style="font-family: Monospace;">
@@ -34,9 +32,9 @@
                 </ul>
             </li>
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
-                <a class="nav-link" href="/page-user.html">
-                    <i class="material-icons">cleaning_services</i>
-                    <p>Stewarding</p>
+                <a class="nav-link" href="">
+                    <i class="material-icons">accessibility</i>
+                    <p>Hygiene Checklist</p>
                 </a>
             </li>
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
@@ -51,16 +49,29 @@
                     <p>Add More</p>
                 </a>
             </li>
+            {% endif %}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
-                    <i class="material-icons">person</i>
-                    <p>User Profile</p>
+                    <i class="material-icons">cleaning_services</i>
+                    <p>Stewarding</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
+                <a class="nav-link" href="{% url 'pending_approvals' %}">
+                    <i class="material-icons">approval</i>
+                    <p>Pending approvals</p>
                 </a>
             </li>
             <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
                 <a class="nav-link" href="/ui-notifications.html">
                     <i class="material-icons">notifications</i>
                     <p>Notifications</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="/page-user.html">
+                    <i class="material-icons">person</i>
+                    <p>User Profile</p>
                 </a>
             </li>
             <li class="nav-item ">

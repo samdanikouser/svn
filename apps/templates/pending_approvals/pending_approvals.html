@@ -1,0 +1,126 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %}Daily Actions{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{% static 'assets/css/user_first_page.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">{{location}}Pending Approvals</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/user/approve_tasks/">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {% for item in locations %}
+                        <div id="location{{ forloop.counter }}" class="activity-section">
+                            <div class="accordion-btn" onclick="toggleActivity('location{{ forloop.counter }}')">
+                                <span>{{ item.name}}</span>
+                                <span class="icon">&#x25BC;</span>
+                            </div>
+                            <div class="activity-content">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                        <tr>
+                                            <th><input type="checkbox" disabled %}></th>
+                                            <th scope="col">Data Entered Date and Time</th>
+                                            <th scope="col">Employee</th>
+                                            <th scope="col">Location</th>
+                                            <th scope="col">Min Temp</th>
+                                            <th scope="col">Max Temp</th>
+                                            <th scope="col">Corrective Action and comments</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for daily_update in user_data %}
+                                            {% if item == daily_update.haccp_link.storage_location%}
+                                            <tr>
+                                                <td><input type="checkbox" name="selected_tasks" value="{{ daily_update.id }}" id="toggle{{ daily_update.id }}"></td>
+                                                <td style="color:black">{{daily_update.created_at}}</td>
+                                                <td style="color:black">{{daily_update.created_by.name}}</td>
+                                                <td style="color:black">{{daily_update.haccp_link.used_for}}</td>
+                                                <td style="color:black">{{daily_update.min_value}}</td>
+                                                <td style="color:black">{{daily_update.max_value}}</td>
+                                                <td style="color:black">{{daily_update.corrective_actions}}{{daily_update.text_message}}</td>
+                                            </tr>
+                                            {%endif%}
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                    <button class="btn btn-danger btn-sm">
+                                        Approve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    
+                 </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+// Toggle function for accordion-style activity content
+function toggleAccordion(locationId) {
+    var content = document.querySelector('#' + locationId + ' .activity-content');
+    var button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+    content.classList.toggle('open');
+    button.classList.toggle('active');
+}
+
+// Toggle function for the dropdown visibility
+function toggleDropdown(dropdownId) {
+    var dropdown = document.getElementById(dropdownId);
+    
+    // Toggle the display property of the dropdown
+    if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+        dropdown.style.display = 'block'; // Show the dropdown
+    } else {
+        dropdown.style.display = 'none'; // Hide the dropdown
+    }
+}
+
+// Toggle function for accordion-style activity content
+function toggleActivity(locationId) {
+    // Close all activities
+    var allActivities = document.querySelectorAll('.activity-section .activity-content');
+    allActivities.forEach(function(activity) {
+        activity.classList.remove('open');
+    });
+
+    var allButtons = document.querySelectorAll('.accordion-btn');
+    allButtons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+
+    // Show the selected activity
+    var activity = document.querySelector('#' + locationId + ' .activity-content');
+    var button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+    if (activity && button) {
+        activity.classList.toggle('open');
+        button.classList.toggle('active');
+    }
+}
+
+</script>
+{% endblock javascripts %}

@@ -43,8 +43,10 @@
  </head>
  
  <body class="">
+   <div class="wrapper ">
+         {% include 'includes/sidenav.html' %}
  
-     <div>
+     <div class="main-panel">
  
        {% include 'includes/navigation.html' %}
  
@@ -56,8 +58,11 @@
  
          </div>
        </div>
-  
+ 
+       {% include 'includes/footer.html' %}
+ 
      </div>
+   </div>
  
    {% include 'includes/fixed-plugin.html' %}
  

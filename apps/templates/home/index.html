@@ -434,26 +434,18 @@
       md.initDashboardPageCharts();
 
     });
-    document.addEventListener('DOMContentLoaded', function () {
-  const toggleDropdowns = document.querySelectorAll('.toggle-dropdown');
+   // Function to toggle the visibility of the dropdown
+function toggleDropdown(dropdownId) {
+    var dropdown = document.getElementById(dropdownId);
+    
+    // Toggle the display property of the dropdown
+    if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+        dropdown.style.display = 'block'; // Show the dropdown
+    } else {
+        dropdown.style.display = 'none'; // Hide the dropdown
+    }
+}
 
-  toggleDropdowns.forEach((toggle) => {
-    toggle.addEventListener('click', function (event) {
-      event.preventDefault();
-
-      // Find the corresponding dropdown container
-      const dropdown = this.nextElementSibling;
-
-      if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-        this.querySelector('span').style.transform = 'rotate(0deg)'; // Reset caret
-      } else {
-        dropdown.style.display = 'block';
-        this.querySelector('span').style.transform = 'rotate(180deg)'; // Rotate caret
-      }
-    });
-  });
-});
 
   </script>
 

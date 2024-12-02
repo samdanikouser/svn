@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 
 from .models import CorrectiveAction
 from .forms import ActionForm
-from apps.location.models import Location
 from ..authentication.decorators import role_required
 from django.contrib import messages
 
@@ -11,16 +10,14 @@ from django.contrib import messages
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def action_list(request):
-    locations = Location.objects.all()
     action = CorrectiveAction.objects.all()
-    return render(request, "action/list.html", {'action': action,"locations":locations})
+    return render(request, "action/list.html", {'action': action})
 
 
 # add employee function
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def add_action(request):
-    locations = Location.objects.all()
     if request.method == "POST":
         form = ActionForm(request.POST)
         if form.is_valid():
@@ -30,7 +27,7 @@ def add_action(request):
             return redirect("/action/list")
         else:
             return render(request, "action/add.html",
-                          {"form": form,"locations":locations})
+                          {"form": form})
     return render(request, "action/add.html", {"form": ActionForm(),"locations":locations})
 
 
@@ -38,7 +35,6 @@ def add_action(request):
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def delete_action(request, id):
-    locations = Location.objects.all()
     action = CorrectiveAction.objects.get(pk=id)
     if request.method == "POST":
         action.delete()
@@ -46,14 +42,13 @@ def delete_action(request, id):
         return redirect("/action/list")
     return render(request,
                   'action/delete.html',
-                  {'action': action,"locations":locations})
+                  {'action': action})
 
 
 # update employee
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def update_action(request, id):
-    locations = Location.objects.all()
     action = CorrectiveAction.objects.get(pk=id)
     if request.method == "POST":
         form = ActionForm(request.POST, instance=action)
@@ -63,15 +58,5 @@ def update_action(request, id):
             return redirect("/action/list")
         else:
             return render(request, "action/update.html",
-                          {"action": action, "form": form,"locations":locations})
-    return render(request, "action/update.html", {"action": action, "form": ActionForm(instance=action),"locations":locations})
-
-
-def employee_list():
-    pass
-def add_employee():
-    pass
-def delete_employee():
-    pass
-def update_employee():
-    pass
+                          {"action": action, "form": form})
+    return render(request, "action/update.html", {"action": action, "form": ActionForm(instance=action)})

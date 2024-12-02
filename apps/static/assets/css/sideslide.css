@@ -64,3 +64,32 @@
 .nav-item.active .toggle-dropdown p {
   transform: rotate(180deg);
 }
+
+
+
+
+
+
+
+/* Ensure that the dropdown is hidden by default */
+.dropdown-container {
+  display: none;
+  list-style-type: none;
+  padding-left: 20px;
+  background-color: #f4f4f4;
+}
+
+/* Optional: Add styling to the active state of the nav item */
+.nav-item.active > .nav-link {
+  font-weight: bold;
+  color: #007bff; /* Adjust active color */
+}
+
+/* Optional: Styling for the caret icon when the dropdown is open */
+.nav-link .caret {
+  transition: transform 0.3s;
+}
+
+.nav-item.active > .nav-link .caret {
+  transform: rotate(180deg);
+}

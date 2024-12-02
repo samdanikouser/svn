@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 
 from .models import Location
 from .forms import LocationForm
@@ -8,7 +8,6 @@ from django.contrib import messages
 
 
 
-# Create your views here.
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def location_list(request):
@@ -16,11 +15,9 @@ def location_list(request):
     return render(request, "location/list.html", {'locations': location})
 
 
-# add employee function
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def add_location(request):
-    location = Location.objects.all()
     if request.method == "POST":
         form = LocationForm(request.POST)
         if form.is_valid():
@@ -30,16 +27,13 @@ def add_location(request):
             return redirect("/location/list")
         else:
             return render(request, "location/add.html",
-                          {"form": form,'locations': location})
-    return render(request, "location/add.html", {"form": LocationForm(),'locations': location})
+                          {"form": form})
+    return render(request, "location/add.html", {"form": LocationForm()})
 
 
-# employee delete function
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def delete_location(request, id):
-    # listings/views.py
-    locations = Location.objects.all()
     location = Location.objects.get(pk=id)
     if request.method == "POST":
         location.delete()
@@ -47,14 +41,12 @@ def delete_location(request, id):
         return redirect("/location/list")
     return render(request,
                   'location/delete.html',
-                  {'location': location,'locations':locations})
+                  {'location': location})
 
 
-# update employee
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def update_location(request, id):
-    locations = Location.objects.all()
     location = Location.objects.get(pk=id)
     if request.method == "POST":
         form = LocationForm(request.POST, instance=location)
@@ -64,5 +56,5 @@ def update_location(request, id):
             return redirect("/location/list")
         else:
             return render(request, "location/update.html",
-                          {"location": location, "form": form,'locations':locations})
-    return render(request, "location/update.html", {"location": location, "form": LocationForm(instance=location),'locations':locations})
+                          {"location": location, "form": form})
+    return render(request, "location/update.html", {"location": location, "form": LocationForm(instance=location)})

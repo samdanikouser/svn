@@ -16,16 +16,13 @@ from apps.location.models import Location
 
 @login_required(login_url="/login/")
 def index(request):
-    locations = Location.objects.filter(status=True)
-    context = {'segment': 'index','locations':locations}
-
+    context = {'segment': 'index'}
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
 
 @login_required(login_url="/login/")
 def pages(request):
-    print("samdanii")
     context = {}
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
@@ -53,5 +50,4 @@ def pages(request):
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def add_more(request):
-    locations = Location.objects.all()
-    return render(request, "add_more/addMore.html",{"locations":locations})
+    return render(request, "add_more/addMore.html",)

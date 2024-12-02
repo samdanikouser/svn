@@ -20,10 +20,9 @@ from ..location.models import Location
 
 
 def login_view(request):
-    locations = Location.objects.filter(status=True)
     form = LoginForm(request.POST or None)
     msg = None
-    print(request.method)
+    locations = Location.objects.filter(status = True)
     if request.method == "POST":
         location = ""
         if 'location' in request.POST:
@@ -35,9 +34,9 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 userPofile_role = UserProfile.objects.get(user=user).role
-                if userPofile_role in ['admin', 'managers']:
+                if userPofile_role in ['admin', 'managers','supervisor'] and not location:
                     return redirect('home')
-                elif location:
+                elif location or (userPofile_role in ['admin', 'managers','supervisor'] and location):
                     url = reverse('daily_activity')
                     return redirect(f'{url}?location={location}')
                 else:
@@ -48,7 +47,7 @@ def login_view(request):
             error_message = 'Error validating the form'
     else:
         error_message = None
-    return render(request, "accounts/login.html", {"form": form, "error_message": error_message,"locations":locations})
+    return render(request, "accounts/login.html", {"form": form, "error_message": error_message,'locations':locations})
 
 
 def user_logout(request):
@@ -61,8 +60,6 @@ def user_logout(request):
 def register_user(request):
     msg = None
     success = False
-    locations = Location.objects.all()
-
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -75,59 +72,47 @@ def register_user(request):
     else:
         form = SignUpForm()
     print(form.errors)
-    return render(request, 'accounts/registration.html', {'form': form,"locations":locations})
+    return render(request, 'accounts/registration.html', {'form': form})
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def password_change_view(request, id):
-    locations = Location.objects.all()
     user = User.objects.get(pk=id)
 
     if request.method == 'POST':
-        # Pass the user object, not just the username string
         form = UsernamePasswordResetForm(request.POST, user=user)
         if form.is_valid():
-            # Get the username and new password from the form
             username = form.cleaned_data['username']
             new_password = form.cleaned_data['new_password1']
-
-            # Find the user by username and update the password
             user = User.objects.get(username=username)
             user.set_password(new_password)
             user.save()
-
-            # Show success message
             messages.success(request, 'Password changed successful!')
             return redirect("/user/list")
     else:
-        # Pass the user object when initializing the form
         form = UsernamePasswordResetForm(user=user)
 
-    return render(request, 'users/passwordchange.html', {"form": form,"locations":locations})
+    return render(request, 'users/passwordchange.html', {"form": form})
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def home(request):
-    user = UserProfile.objects.get(user=request.user).role
-    locations= Location.objects.all()
-    return render(request, 'home/index.html',{"locations":locations,"user":user})
+    return render(request, 'home/index.html')
 
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def list_user(request):
-    locations = Location.objects.all()
     users = UserProfile.objects.all()
-    return render(request, "users/user_list.html", {'users': users,"locations":locations})
+    return render(request, "users/user_list.html", {'users': users})
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def delete_user(request, id):
-    locations = Location.objects.all()
     user = UserProfile.objects.get(pk=id)
     if request.method == "POST":
         user.delete()
@@ -135,13 +120,12 @@ def delete_user(request, id):
         return redirect("/user/list")
     return render(request,
                   'users/user_delete.html',
-                  {'user': user,"locations":locations})
+                  {'user': user})
 
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def update_user(request, id):
-    locations = Location.objects.all()
     user = UserProfile.objects.get(pk=id)
     if request.method == "POST":
         form = UserUpdateForm(request.POST, instance=user)
@@ -151,14 +135,13 @@ def update_user(request, id):
             return redirect("/user/list")
     else:
         form = UserUpdateForm(instance=user)
-    return render(request, 'users/user_update.html', {'form': form,"user": user,"locations":locations})
+    return render(request, 'users/user_update.html', {'form': form,"user": user})
 
 
 
 @login_required
 @role_required(allowed_roles=['admin', 'managers'])
 def add_single_user_profile(request):
-    locations = Location.objects.all()
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
         if form.is_valid():
@@ -173,26 +156,21 @@ def add_single_user_profile(request):
             return redirect("/user/list")
     else:
         form = UserProfileForm()
-    return render(request, 'users/add_single_user_profile.html', {'form': form, 'locations': locations})
+    return render(request, 'users/add_single_user_profile.html', {'form': form})
 
 
 @login_required
 @role_required(allowed_roles=['admin', 'managers'])
 def upload_excel_user_profiles(request):
-    locations = Location.objects.all()
     if request.method == 'POST' and request.FILES['excel_file']:
         excel_file = request.FILES['excel_file']
-        df = pd.read_excel(excel_file)
-        print(df)
-        
+        df = pd.read_excel(excel_file)        
         for _, row in df.iterrows():
-            # Create a User with employee_id as the username
             user = User.objects.create_user(
                 username=str(row['employee_id']),
                 password=None  # No password set
             )
-            
-            user_profile = UserProfile.objects.create(
+            UserProfile.objects.create(
                 user=user,
                 name=row['name'],
                 role=row['role'],
@@ -201,7 +179,5 @@ def upload_excel_user_profiles(request):
                 job_title=row['job_title'],
                 status=row['status']
             )
-        
         return redirect("/user/list")
-    
-    return render(request, 'users/upload_excel_user_profiles.html'),{"locations":locations}
+    return render(request, 'users/upload_excel_user_profiles.html')
