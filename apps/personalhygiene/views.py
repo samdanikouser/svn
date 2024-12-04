@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect
 
 from apps.authentication.models import UserProfile
 from apps.personalhygiene.forms import PersonalHygieneForm
-from apps.personalhygiene.models import PersonalHygiene
+from apps.personalhygiene.models import PersonalHygiene, UploadedPhoto
 from ..authentication.decorators import role_required
 from django.contrib import messages
+from django.core.files.storage import default_storage
 
 
 @login_required
@@ -24,6 +25,9 @@ def add_personalhygiene(request):
     else:
         user_profiles = UserProfile.objects.filter()
     if request.method == "POST":
+        uploaded_file = request.FILES.get('photos')
+        photo_instance = UploadedPhoto.objects.create(file=uploaded_file)
+        file_path = default_storage.save(f"uploads/{uploaded_file.name}", uploaded_file)
         knowledge_of_personal_hygiene = request.POST.get('knowledge_of_personal_hygiene')
         trimmed_beard_moustache = request.POST.get('trimmed_beard_moustache')
         overall_health = request.POST.get('overall_health')
@@ -32,17 +36,24 @@ def add_personalhygiene(request):
         cleaned_hands = request.POST.get('cleaned_hands')
         proper_uniform = request.POST.get('proper_uniform')
         trimmed_hair = request.POST.get('trimmed_hair')
-        print(knowledge_of_personal_hygiene)
+        parameters_checked = f"""{knowledge_of_personal_hygiene}
+        {trimmed_beard_moustache}
+        {overall_health}
+        {short_nails}
+        {overall_cleanliness}
+        {cleaned_hands}
+        {proper_uniform}
+        {trimmed_hair}"""
         personal_hygiene = PersonalHygiene()
         personal_hygiene.employee = UserProfile.objects.get(id=int(request.POST['employee']))
         personal_hygiene.inspected_date = request.POST['inspection_date']
         personal_hygiene.inspected_by = UserProfile.objects.get(user=request.user)
-        personal_hygiene.parameters_checked = trimmed_hair
+        personal_hygiene.parameters_checked = parameters_checked
         personal_hygiene.status = True
-        personal_hygiene.photos = request.FILES
+        personal_hygiene.photos.add(photo_instance)
         personal_hygiene.save()
         messages.success(request, 'Added successfully!')
-        return redirect('personalhygiene/add/')
+        return redirect('/personalhygiene/add/')
     return render(request, "personal_hygiene/add.html",{'user_profiles': user_profiles})
 
 
