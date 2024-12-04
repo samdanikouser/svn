@@ -1,0 +1,73 @@
+    .form-group label {
+        font-size: 1.1rem;
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .form-control, .form-control-file, .custom-select {
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Remove gray background for readonly and disabled fields */
+    .form-control[readonly], .form-control:disabled {
+        background-color: transparent !important; /* Force transparent background */
+        cursor: not-allowed; /* Change cursor to indicate it's not editable */
+        border-color: #ccc !important; /* Add a neutral border color */
+        box-shadow: none !important; /* Remove the shadow for these fields */
+    }
+
+    /* For all form controls, including readonly and disabled */
+    .form-control {
+        background-color: #fff; /* Keep white background for editable fields */
+    }
+
+    .form-control:focus, .custom-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn {
+        font-size: 1.2rem;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .form-row .form-group {
+        width: 48%;
+    }
+
+    /* File Upload Styling */
+    .form-control-file {
+        padding: 10px;
+    }
+
+    /* Responsive Styling for Smaller Screens */
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+        }
+
+        .form-row .form-group {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+    }

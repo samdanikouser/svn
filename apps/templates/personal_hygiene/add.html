@@ -1,0 +1,196 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/personal_hygiene_add.css' %}">
+{% endblock stylesheets %}
+{% block title %}Personal Hygiene Inspection{% endblock %}
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Personal Hygiene Inspection</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="personalHygieneForm">
+                    {% csrf_token %}
+                    
+                    <!-- Employee Name Dropdown -->
+                    <div class="form-group mb-4">
+                        <label for="employee" class="font-weight-bold">Employee Name:</label>
+                        <select id="employee" name="employee" class="form-control custom-select" required>
+                            <option value="" selected disabled>Select Employee</option>
+                            {% for profile in user_profiles %}
+                                <option value="{{ profile.id }}"
+                                        data-employee-id="{{ profile.employee_id }}"
+                                        data-position="{{ profile.job_title }}">
+                                    {{ profile.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            
+                    <!-- Employee ID and Position (Read-Only) -->
+                    <div class="form-row mb-4">
+                        <div class="form-group col-md-6">
+                            <label for="employee_id" class="font-weight-bold">Employee ID:</label>
+                            <input type="text" id="employee_id" name="employee_id" class="form-control" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="position" class="font-weight-bold">Position:</label>
+                            <input type="text" id="position" name="position" class="form-control" readonly>
+                        </div>
+                    </div>
+            
+                    <!-- Inspection Date (Read-Only) -->
+                    <div class="form-group mb-4">
+                        <label for="inspection_date" class="font-weight-bold">Inspection Date:</label>
+                        <input type="date" id="inspection_date" name="inspection_date" class="form-control" readonly>
+                    </div>
+            
+                    <!-- Parameters to Check -->
+                    <div class="form-group mb-4">
+                        <label for="parameters_checked" class="font-weight-bold">Parameters to Check:</label>
+                        
+                        <div class="mb-3">
+                            <label>1. Knowledge of Personal Hygiene:</label>
+                            <select name="knowledge_of_personal_hygiene" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>2. Trimmed/Shaved Beard and Moustache:</label>
+                            <select name="trimmed_beard_moustache" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label>3. Overall Health:</label>
+                            <select name="overall_health" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label>4. Short Nails:</label>
+                            <select name="short_nails" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label>5. Overall Cleanliness:</label>
+                            <select name="overall_cleanliness" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label>6. Cleaned Hands:</label>
+                            <select name="cleaned_hands" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label>7. Proper Uniform:</label>
+                            <select name="proper_uniform" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label>8. Trimmed Hair:</label>
+                            <select name="trimmed_hair" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+            
+                    <!-- File Upload -->
+                    <div class="form-group mb-4">
+                        <label for="photos" class="font-weight-bold">Upload Photos:</label>
+                        <input type="file" id="photos" name="photos" class="form-control" accept="image/*" capture="camera" multiple required>
+                        <div id="fileNameDisplay" class="mt-2"></div>
+                    </div>
+            
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit Inspection</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+    // Prepopulate fields based on selected employee
+    $(document).ready(function () {
+        const today = new Date().toISOString().split('T')[0];
+        $('#inspection_date').val(today); // Set today's date
+
+        $('#employee').on('change', function () {
+            const selectedOption = $(this).find(':selected');
+            const employeeId = selectedOption.data('employee-id');
+            const position = selectedOption.data('position');
+
+            // Populate fields
+            $('#employee_id').val(employeeId);
+            $('#position').val(position);
+        });
+    });
+
+
+    document.getElementById('photos').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // Display the image preview
+                var imgPreview = document.createElement('img');
+                imgPreview.src = e.target.result;
+                imgPreview.width = 100; // You can adjust the size
+                imgPreview.height = 100; // You can adjust the size
+                document.getElementById('fileNameDisplay').appendChild(imgPreview);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+
+    document.getElementById('photos').addEventListener('change', function () {
+        var fileNames = [];
+        for (var i = 0; i < this.files.length; i++) {
+            fileNames.push(this.files[i].name);
+        }
+        document.getElementById('fileNameDisplay').innerHTML = 'Selected files: ' + fileNames.join(', ');
+    });
+</script>
+{% endblock javascripts %}
+

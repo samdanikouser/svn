@@ -31,12 +31,16 @@
                     {% endfor %}
                 </ul>
             </li>
+            {% endif %}
+            {% if user_role == 'admin' or user_role == 'manager' or user_role == 'supervisor'%}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{% url 'add_personalhygiene' %}">
                     <i class="material-icons">accessibility</i>
                     <p>Hygiene Checklist</p>
                 </a>
             </li>
+            {% endif %}
+            {% if user_role == 'admin' or user_role == 'manager' %}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
                     <i class="material-icons">assignment</i>
@@ -50,6 +54,7 @@
                 </a>
             </li>
             {% endif %}
+            
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
                     <i class="material-icons">cleaning_services</i>

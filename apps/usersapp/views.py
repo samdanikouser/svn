@@ -16,7 +16,11 @@ from django.contrib import messages
 @login_required
 @role_required(allowed_roles=['admin','managers','supervisor'])
 def pending_approvals(request):
-        user_data = DailyUpdates.objects.filter(supervisor_approved_by__isnull=True)
+        user_role = request.user.userprofile.role
+        if user_role == "supervisor":
+            user_data = DailyUpdates.objects.filter(supervisor_approved_by__isnull=True)
+        elif user_role == "admin" or user_role == "managers":
+            user_data = DailyUpdates.objects.filter(manager_approved_by__isnull=True,supervisor_approved_by__isnull=False)        
         return render(request, 'pending_approvals/pending_approvals.html',{"user_data":user_data})
 
 

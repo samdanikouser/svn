@@ -1,0 +1,29 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Delete Location{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Delete Location</h4>
+            </div>
+            <div class="card-body">
+                <form action="/location/delete/{{location.id}}" method="post">
+                    {% csrf_token %}
+                    <p>Are you sure you want to delete this Location,this may schedule delete related to this
+                        location?<b>{{ location.name }}</b></p>
+
+                    <input type="submit" class="btn btn-danger">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

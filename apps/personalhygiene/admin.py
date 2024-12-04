@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import PersonalHygiene, UploadedPhoto
 
-# Register your models here.
+admin.site.register(PersonalHygiene)
+admin.site.register(UploadedPhoto)

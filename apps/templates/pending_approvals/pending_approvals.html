@@ -43,6 +43,9 @@
                                             <th scope="col">Min Temp</th>
                                             <th scope="col">Max Temp</th>
                                             <th scope="col">Corrective Action and comments</th>
+                                            {%if user_role != 'supervisor'%}
+                                            <th scope="col">Approved By</th>
+                                            {%endif%}
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -56,6 +59,9 @@
                                                 <td style="color:black">{{daily_update.min_value}}</td>
                                                 <td style="color:black">{{daily_update.max_value}}</td>
                                                 <td style="color:black">{{daily_update.corrective_actions}}{{daily_update.text_message}}</td>
+                                                {%if user_role != 'supervisor'%}
+                                                <td style="color:black">{{daily_update.supervisor_approved_by}}</td>
+                                                {%endif%}
                                             </tr>
                                             {%endif%}
                                             {%endfor%}
