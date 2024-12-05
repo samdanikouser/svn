@@ -28,7 +28,7 @@ def add_action(request):
         else:
             return render(request, "action/add.html",
                           {"form": form})
-    return render(request, "action/add.html", {"form": ActionForm(),"locations":locations})
+    return render(request, "action/add.html", {"form": ActionForm()})
 
 
 # employee delete function

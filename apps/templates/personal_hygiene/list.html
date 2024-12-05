@@ -1,5 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% block title %}Hygiene List{% endblock %}
 {% block content %}
 {% if messages %}
     <div class="messages">
@@ -13,38 +14,55 @@
 
 <div style="display: flex; justify-content: space-between; padding: 20px;">
     <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
-    <a href="{% url 'addlocation' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">Add Location</a>
 </div>
  <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Locations</h4>
+                    <h4 class="card-title ">Inspection List</h4>
                     <p class="card-category"></p>
                 </div>
                 <div class="card-body">
+                    <form method="POST" class="mb-4">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="date" name="inspected_date" value="{{ inspected_date }}" class="form-control" placeholder="Filter by Date">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="inspected_by" value="{{ inspected_by }}" class="form-control" placeholder="Filter by Inspector">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <a href="{% url 'personalhygiene_list' %}" class="btn btn-secondary">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+                    {% if records%}
+                
                     <div class="table-responsive">
                         <table class="table">
                             <thead class=" text-primary">
                             <tr>
                                 <th scope="col">S.NO.</th>
-                                <th scope="col">NAME</th>
-                                <th scope="col">STATUS</th>
-                                <th scope="col">ACTION</th>
+                                <th scope="col">Employee</th>
+                                <th scope="col">Employee ID</th>
+                                <th scope="col">Inspected By</th>
+                                <th scope="col">Inspected Date</th>
+                                <th  scope="col">Parameters</th>
+                                <th scope="col">Photos</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% for location in locations %}
+                            {% for record in records %}
                             <tr>
                                 <td style="color:black">{{forloop.counter}}</td>
-                                <td style="color:black">{{location.name}}</td>
-                                <td><input type="checkbox" disabled id="toggle{{ location.id }}" {% if location.status %}checked{% endif %}></td>
-                                <td>
-                                    <a href="/location/delete/{{location.id}}"
-                                       class="btn btn-danger btn-sm">Delete</a>
-                                    <a href="/location/update/{{location.id}}"
-                                       class="btn btn-success btn-sm">Update</a>
-                                </td>
+                                <td style="color:black">{{record.employee.name}}</td>
+                                <td style="color:black">{{record.employee.employee_id}}</td>
+                                <td style="color:black">{{record.inspected_by}}</td>
+                                <td style="color:black">{{record.inspected_date}}</td>
+                                <td style="color:black">{{record.parameters_checked}}</td>
+                                <td style="color:black">{{record.photos.photo}}</td>
                             </tr>
                             {%endfor%}
                             </tbody>
@@ -52,6 +70,7 @@
 
 
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -69,8 +69,6 @@
   {% include 'includes/scripts.html' %}
 
   {% include 'includes/scripts-sidebar.html' %}
-  {% block javascripts %}
-
   <script>
     document.addEventListener('DOMContentLoaded', function () {
   const toggleDropdowns = document.querySelectorAll('.toggle-dropdown');
@@ -118,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 </script>
+  {% block javascripts %} 
 
 {% endblock javascripts %}
 

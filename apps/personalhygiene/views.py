@@ -10,9 +10,22 @@ from django.core.files.storage import default_storage
 
 
 @login_required
-@role_required(allowed_roles=['admin','managers'])
+@role_required(allowed_roles=['admin', 'managers'])
 def personalhygiene_list(request):
-    pass
+    if request.method == "POST":
+        inspected_date = request.GET.get('inspected_date', '')
+        inspected_by = request.GET.get('inspected_by', '')
+        personal_hygiene_records = PersonalHygiene.objects.all()
+        if inspected_date:
+            personal_hygiene_records = personal_hygiene_records.filter(inspected_date=inspected_date)
+        if inspected_by:
+            personal_hygiene_records = personal_hygiene_records.filter(inspected_by__icontains=inspected_by)
+        return render(request, 'personal_hygiene/list.html', {
+            'records': personal_hygiene_records,
+            'inspected_date': inspected_date,
+            'inspected_by': inspected_by,
+        })
+    return render(request, 'personal_hygiene/list.html',)
 
 @login_required
 @role_required(allowed_roles=['admin','managers','supervisor'])
