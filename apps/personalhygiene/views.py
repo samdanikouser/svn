@@ -25,9 +25,6 @@ def add_personalhygiene(request):
     else:
         user_profiles = UserProfile.objects.filter()
     if request.method == "POST":
-        uploaded_file = request.FILES.get('photos')
-        photo_instance = UploadedPhoto.objects.create(file=uploaded_file)
-        file_path = default_storage.save(f"uploads/{uploaded_file.name}", uploaded_file)
         knowledge_of_personal_hygiene = request.POST.get('knowledge_of_personal_hygiene')
         trimmed_beard_moustache = request.POST.get('trimmed_beard_moustache')
         overall_health = request.POST.get('overall_health')
@@ -50,10 +47,14 @@ def add_personalhygiene(request):
         personal_hygiene.inspected_by = UserProfile.objects.get(user=request.user)
         personal_hygiene.parameters_checked = parameters_checked
         personal_hygiene.status = True
-        personal_hygiene.photos.add(photo_instance)
         personal_hygiene.save()
+        photos_of = request.FILES.getlist('photos')
+        for photos in photos_of:
+            file_path = default_storage.save(f"personal_hygiene_photos/{photos.name}", photos)
+            UploadedPhoto.objects.create(photo=file_path)
+            personal_hygiene.photos.add(UploadedPhoto.objects.create(photo=file_path))
         messages.success(request, 'Added successfully!')
-        return redirect('/personalhygiene/add/')
+        return redirect('/personalhygiene/add')
     return render(request, "personal_hygiene/add.html",{'user_profiles': user_profiles})
 
 

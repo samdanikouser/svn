@@ -134,8 +134,16 @@
             
                     <!-- File Upload -->
                     <div class="form-group mb-4">
-                        <label for="photos" class="font-weight-bold">Upload Photos:</label>
-                        <input type="file" id="photos" name="photos" class="form-control" accept="image/*" capture="camera" multiple required>
+                        <label for="photos" class="font-weight-bold">Take Photos:</label>
+                        <input 
+                            type="file" 
+                            id="photos" 
+                            name="photos" 
+                            class="form-control" 
+                            accept="image/*" 
+                            capture="camera" 
+                            multiple 
+                            required>
                         <div id="fileNameDisplay" class="mt-2"></div>
                     </div>
             
@@ -150,47 +158,53 @@
 {% endblock %}
 {% block javascripts %}
 <script>
-    // Prepopulate fields based on selected employee
     $(document).ready(function () {
+        // Set today's date in the inspection_date field
         const today = new Date().toISOString().split('T')[0];
-        $('#inspection_date').val(today); // Set today's date
+        $('#inspection_date').val(today);
 
+        // Populate employee ID and position based on selected employee
         $('#employee').on('change', function () {
             const selectedOption = $(this).find(':selected');
             const employeeId = selectedOption.data('employee-id');
             const position = selectedOption.data('position');
 
-            // Populate fields
             $('#employee_id').val(employeeId);
             $('#position').val(position);
         });
-    });
 
+        // Handle file input change
+        const photosInput = document.getElementById('photos');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
 
-    document.getElementById('photos').addEventListener('change', function (event) {
-        var file = event.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                // Display the image preview
-                var imgPreview = document.createElement('img');
-                imgPreview.src = e.target.result;
-                imgPreview.width = 100; // You can adjust the size
-                imgPreview.height = 100; // You can adjust the size
-                document.getElementById('fileNameDisplay').appendChild(imgPreview);
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+        photosInput.addEventListener('change', function (event) {
+            const files = event.target.files;
+            fileNameDisplay.innerHTML = ''; // Clear previous thumbnails
 
+            const fileNames = [];
 
-    document.getElementById('photos').addEventListener('change', function () {
-        var fileNames = [];
-        for (var i = 0; i < this.files.length; i++) {
-            fileNames.push(this.files[i].name);
-        }
-        document.getElementById('fileNameDisplay').innerHTML = 'Selected files: ' + fileNames.join(', ');
+            Array.from(files).forEach(file => {
+                fileNames.push(file.name); // Collect file names
+
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Create and display an image thumbnail
+                        const imgPreview = document.createElement('img');
+                        imgPreview.src = e.target.result;
+                        imgPreview.style.width = '100px';
+                        imgPreview.style.margin = '5px';
+                        fileNameDisplay.appendChild(imgPreview);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Display selected file names
+            fileNameDisplay.innerHTML += `<p>Selected files: ${fileNames.join(', ')}</p>`;
+        });
     });
 </script>
+
 {% endblock javascripts %}
 

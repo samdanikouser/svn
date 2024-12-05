@@ -76,7 +76,7 @@ def storagelocationAdminData(request, name, status):
             admin_data.time_on =time_on
             admin_data.min_temp =min_temp
             admin_data.max_temp =max_temp
-            admin_data.save()
+            admin_data.save() 
             corrective_actions = CorrectiveAction.objects.filter(id__in=corrective_action)
             admin_data.corrective_action.set(corrective_actions)
     messages.success(request, f'{sub_storage_location} task stored successful!')
