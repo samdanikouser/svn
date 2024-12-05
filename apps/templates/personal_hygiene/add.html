@@ -181,11 +181,7 @@
             const files = event.target.files;
             fileNameDisplay.innerHTML = ''; // Clear previous thumbnails
 
-            const fileNames = [];
-
             Array.from(files).forEach(file => {
-                fileNames.push(file.name); // Collect file names
-
                 if (file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
@@ -194,6 +190,9 @@
                         imgPreview.src = e.target.result;
                         imgPreview.style.width = '100px';
                         imgPreview.style.margin = '5px';
+                        imgPreview.style.border = '1px solid #ccc';
+                        imgPreview.style.borderRadius = '5px';
+                        imgPreview.style.display = 'inline-block';
                         fileNameDisplay.appendChild(imgPreview);
                     };
                     reader.readAsDataURL(file);
@@ -201,10 +200,14 @@
             });
 
             // Display selected file names
-            fileNameDisplay.innerHTML += `<p>Selected files: ${fileNames.join(', ')}</p>`;
+            const fileNames = Array.from(files).map(file => file.name).join(', ');
+            const fileNamesText = document.createElement('p');
+            fileNamesText.textContent = `Selected files: ${fileNames}`;
+            fileNameDisplay.appendChild(fileNamesText);
         });
     });
 </script>
+
 
 {% endblock javascripts %}
 
