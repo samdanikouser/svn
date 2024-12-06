@@ -37,16 +37,11 @@
                                     </div>
                                     <div class="activity-inputs">
                                         <label class="input-group">
-                                            <span class="input-label">Min</span>
-                                            <input type="text" id="min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="cool-input" placeholder="Min" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
-                                        </label>
-                                        <label class="input-group">
-                                            <span class="input-label">Max</span>
-                                            <input type="text" id="max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
-                                                class="cool-input" placeholder="Max"     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                            <span class="input-label">Temperature</span>
+                                            <input type="text" id="temperature_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="cool-input" placeholder="Temperature" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                         </label>
                                         <label class="save-btn-container">
-                                            <button onclick="checkAndSave({{ item.id }}, 'min_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', 'max_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}', '{{ time }}')" 
+                                            <button onclick="checkAndSave({{ item.id }}, 'temperature_value_{{ forloop.parentloop.counter }}_{{ forloop.counter }}','{{ time }}')" 
                                                 class="cool-input save-btn">Save</button>
                                         </label>    
                                     </div>
@@ -82,29 +77,41 @@ function toggleAccordion(locationId) {
 }
 
 // Toggle the visibility of location-specific content
+// Toggle the visibility of location-specific content
 function toggleActivity(locationId) {
-    // Close all activities
-    var allActivities = document.querySelectorAll('.activity-section .activity-content');
-    allActivities.forEach(function(activity) {
+    // Find the clicked activity content
+    const activity = document.querySelector('#' + locationId + ' .activity-content');
+    const button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+    // Check if the activity content is currently open
+    if (activity.classList.contains('open')) {
+        // If open, close it
         activity.classList.remove('open');
-    });
-    var allButtons = document.querySelectorAll('.accordion-btn');
-    allButtons.forEach(function(button) {
         button.classList.remove('active');
-    });
+    } else {
+        // If not open, open it
+        activity.classList.add('open');
+        button.classList.add('active');
 
-    // Show the selected activity
-    var activity = document.querySelector('#' + locationId + ' .activity-content');
-    var button = document.querySelector('#' + locationId + ' .accordion-btn');
-
-    activity.classList.toggle('open');
-    button.classList.toggle('active');
+        // Optionally, close all other sections when opening the clicked one (accordion-style)
+        const allActivities = document.querySelectorAll('.activity-section .activity-content');
+        allActivities.forEach(function (otherActivity) {
+            if (otherActivity !== activity) {
+                otherActivity.classList.remove('open');
+                const otherButton = otherActivity.previousElementSibling;
+                if (otherButton) {
+                    otherButton.classList.remove('active');
+                }
+            }
+        });
+    }
 }
 
+
+
 // Function to handle Save button click
-async function checkAndSave(itemId, minInputId, maxInputId, timeValue) {
-const minValue = parseFloat(document.getElementById(minInputId).value);
-const maxValue = parseFloat(document.getElementById(maxInputId).value);
+async function checkAndSave(itemId, tempInputId, timeValue) {
+const temperature_value = parseFloat(document.getElementById(tempInputId).value);
 
 // Send item ID and entered min/max values to the backend to check the range
 const response = await fetch('user/check-range/', {
@@ -115,8 +122,7 @@ const response = await fetch('user/check-range/', {
     },
     body: JSON.stringify({
         item_id: itemId,
-        entered_min: minValue,
-        entered_max: maxValue
+        temperature_value: temperature_value
     })
 });
 
@@ -144,10 +150,10 @@ data.corrective_actions.forEach(action => {
 document.getElementById('correctiveModal').style.display = 'flex';
 
 // Store data for later use
-window.dataToSave = { itemId, minValue, maxValue, timeValue, correctiveActions: data.corrective_actions };
+window.dataToSave = { itemId, temperature_value, timeValue, correctiveActions: data.corrective_actions };
 } else {
 // Save data directly if values are in range
-saveData(itemId, minValue, maxValue, timeValue, null);
+saveData(itemId, temperature_value, timeValue, null);
 }
 
 }
@@ -167,17 +173,16 @@ window.dataToSave.correctiveActions.forEach(action => {
 const actionComment = document.getElementById('actionComment').value;
 
 // Call saveData function with the selected actions and the comment
-const { itemId, minValue, maxValue, timeValue } = window.dataToSave;
-saveData(itemId, minValue, maxValue, timeValue, { selectedActions, comment: actionComment });
+const { itemId, temperature_value, timeValue } = window.dataToSave;
+saveData(itemId, temperature_value, timeValue, { selectedActions, comment: actionComment });
 }
 
 // Function to send data to backend to save it
-async function saveData(itemId, minValue, maxValue, timeValue, correctiveData) {
+async function saveData(itemId, temperature_value, timeValue, correctiveData) {
 if(correctiveData){
     data_to_send =  JSON.stringify({
         item_id: itemId,
-        entered_min: minValue,
-        entered_max: maxValue,
+        temperature_value: temperature_value,
         corrective_actions: correctiveData.selectedActions,
         comment: correctiveData.comment,
         time: timeValue
@@ -186,8 +191,7 @@ if(correctiveData){
 }else{
     data_to_send =  data_to_send =  JSON.stringify({
         item_id: itemId,
-        entered_min: minValue,
-        entered_max: maxValue,
+        temperature_value: temperature_value,
         time: timeValue
     })
 }

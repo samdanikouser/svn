@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from apps.department.models import Department
+
 
 class UserProfile(models.Model):
     """User Profile model, created on creating user while registration"""
@@ -11,6 +13,7 @@ class UserProfile(models.Model):
                                                     ('supervisor', 'Supervisor'),('managers','Managers'),('e_learning','e-Learning')],null=True,blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     employee_id = models.IntegerField(unique=True, null=True, blank=True)
+    department = models.OneToOneField(Department, on_delete=models.CASCADE,null=True,blank=True)
     data_of_joining = models.DateField(null=True, blank=True)  # Changed to DateField
     job_title = models.CharField(max_length=200, null=True, blank=True)
     status = models.BooleanField(default=True)

@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+import geocoder
 from apps.authentication.decorators import role_required
 from apps.correctiveaction.models import CorrectiveAction
 from apps.location.models import Location
@@ -45,10 +46,22 @@ def storagelocation(request, name, status):
                   {"roles": roles, "name": name, "status": status,
                    "corrective_action": corrective_action})
 
+import geocoder
+from geopy.distance import geodesic
+
+allowed_location = (29.3368231, 47.6751726)
+radius_in_km = 2  
+
+
+def is_within_allowed_location(user_latitude, user_longitude):
+    user_location = (user_latitude, user_longitude)
+    distance = geodesic(allowed_location, user_location).kilometers
+    return distance <= radius_in_km
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def storagelocationAdminData(request, name, status):
+
     if request.method == "POST":
         storage_location = name
         sub_storage_location = status

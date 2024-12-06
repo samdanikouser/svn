@@ -1,5 +1,4 @@
 {% load static %}
-
 <div class="sidebar" data-color="purple" data-background-color="white" data-image="/static/assets/img/sidebar-1.jpg">
     <div class="logo">
         <a target="_blank" rel="noopener noreferrer"
@@ -9,13 +8,13 @@
     </div>
     <div class="sidebar-wrapper">
         <ul class="nav">
+            {% if user_role == 'admin' or user_role == 'manager' %}
             <li class="nav-item {% if 'index' in segment %} active {% endif %}">
                 <a class="nav-link" href="/">
                     <i class="material-icons">dashboard</i>
                     <p>Dashboard</p>
                 </a>
             </li>
-            {% if user_role == 'admin' or user_role == 'manager' %}
             <li class="nav-item {% if 'haccp' in segment %} active {% endif %}">
                 <a href="javascript:void(0)" class="nav-link toggle-dropdown" onclick="toggleDropdown('haccp-dropdown')">
                     <i class="material-icons">fact_check</i>
@@ -52,15 +51,15 @@
                     <i class="material-icons">add_circle</i>
                     <p>Add More</p>
                 </a>
-            </li>
-            {% endif %}
-            
+            </li>            
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
                     <i class="material-icons">cleaning_services</i>
                     <p>Stewarding</p>
                 </a>
             </li>
+            {% endif %}
+            {% if user_role == 'admin' or user_role == 'manager' or user_role == 'supervisor'%}
             <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
                 <a class="nav-link" href="{% url 'pending_approvals' %}">
                     <i class="material-icons">approval</i>
@@ -73,6 +72,7 @@
                     <p>Notifications</p>
                 </a>
             </li>
+            {% endif %}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
                     <i class="material-icons">person</i>
@@ -89,5 +89,4 @@
     </div>
 
 </div>
-
 

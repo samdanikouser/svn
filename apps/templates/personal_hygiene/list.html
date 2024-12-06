@@ -13,7 +13,10 @@
 {% endif %}
 
 <div style="display: flex; justify-content: space-between; padding: 20px;">
-    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm d-flex align-items-center" style="text-decoration: none; font-size: 16px;">
+    <i class="material-icons" style="font-size: 20px; margin-right: 8px;">arrow_back</i> Back
+</a>
+
 </div>
  <div class="row">
         <div class="col-md-12">
@@ -23,12 +26,68 @@
                     <p class="card-category"></p>
                 </div>
                 <div class="card-body">
-                    <form method="POST" class="mb-4">
+                    
+                    <form method="GET" action="{% url 'personalhygiene_list' %}" class="mb-4">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-4">
-                                <input type="date" name="inspected_date" value="{{ inspected_date }}" class="form-control" placeholder="Filter by Date">
+                                <!-- Dropdown for filter type -->
+                                <label for="filter_type">Filter By:</label>
+                                <select id="filter_type" name="filter_type" class="form-control" onchange="updateFilterFields()">
+                                    <option value="">-- Select Filter Type --</option>
+                                    <option value="monthly" {% if filter_type == 'monthly' %}selected{% endif %}>Monthly</option>
+                                    <option value="yearly" {% if filter_type == 'yearly' %}selected{% endif %}>Yearly</option>
+                                    <option value="range" {% if filter_type == 'range' %}selected{% endif %}>Date Range</option>
+                                    <option value="date" {% if filter_type == 'date' %}selected{% endif %}>Specific Date</option>
+                                    <option value="department" {% if filter_type == 'department' %}selected{% endif %}>Department</option>
+                                </select>
                             </div>
+                        </div>
+                    
+                        <!-- Dynamic Fields -->
+                        <div class="row mt-3" id="filter_fields">
+                            <!-- Monthly Filter -->
+                            <div id="monthly_filter" class="col-md-4" style="display: none;">
+                                <label for="month">Select Month:</label>
+                                <select name="month" id="month" class="form-control">
+                                    <option value="">-- Select Month --</option>
+                                    <option value="1" {% if month == '1' %}selected{% endif %}>January</option>
+                                    <option value="2" {% if month == '2' %}selected{% endif %}>February</option>
+                                    <option value="3" {% if month == '3' %}selected{% endif %}>March</option>
+                                    <!-- Add remaining months -->
+                                </select>
+                            </div>
+                    
+                            <!-- Yearly Filter -->
+                            <div id="yearly_filter" class="col-md-4" style="display: none;">
+                                <label for="year">Select Year:</label>
+                                <input type="number" name="year" id="year" class="form-control" value="{{ year }}">
+                            </div>
+                    
+                            <!-- Date Range Filter -->
+                            <div id="range_filter" class="col-md-6" style="display: none;">
+                                <label for="start_date">Start Date:</label>
+                                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ start_date }}">
+                                <label for="end_date" class="mt-2">End Date:</label>
+                                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ end_date }}">
+                            </div>
+                    
+                            <!-- Specific Date Filter -->
+                            <div id="date_filter" class="col-md-4" style="display: none;">
+                                <label for="inspected_date">Select Date:</label>
+                                <input type="date" name="inspected_date" id="inspected_date" class="form-control" value="{{ inspected_date }}">
+                            </div>
+                            <div id="department" class="col-md-4" style="display: none;">
+                                <label for="department">Select Department:</label>
+                                <input type="text" name="department" value="{{ department }}" class="form-control" placeholder="Filter by Department">
+                            </div>
+                            <div>
+                            
+                            </div>
+                        </div>
+                    
+                        <!-- Inspector Filter and Buttons -->
+                        <div class="row mt-3">
                             <div class="col-md-4">
                                 <input type="text" name="inspected_by" value="{{ inspected_by }}" class="form-control" placeholder="Filter by Inspector">
                             </div>
@@ -38,6 +97,7 @@
                             </div>
                         </div>
                     </form>
+                    
                     {% if records%}
                 
                     <div class="table-responsive">
@@ -47,10 +107,10 @@
                                 <th scope="col">S.NO.</th>
                                 <th scope="col">Employee</th>
                                 <th scope="col">Employee ID</th>
+                                <th scope="col">Department</th>
                                 <th scope="col">Inspected By</th>
                                 <th scope="col">Inspected Date</th>
-                                <th  scope="col">Parameters</th>
-                                <th scope="col">Photos</th>
+                                <th scope="col">View</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -59,10 +119,13 @@
                                 <td style="color:black">{{forloop.counter}}</td>
                                 <td style="color:black">{{record.employee.name}}</td>
                                 <td style="color:black">{{record.employee.employee_id}}</td>
+                                <td style="color:black">{{record.employee.department}}</td>
                                 <td style="color:black">{{record.inspected_by}}</td>
                                 <td style="color:black">{{record.inspected_date}}</td>
-                                <td style="color:black">{{record.parameters_checked}}</td>
-                                <td style="color:black">{{record.photos.photo}}</td>
+                                <td>
+                                    <a href="/personalhygiene/view/{{record.id}}"
+                                       class="btn btn-success btn-sm">Show</a>
+                                </td>
                             </tr>
                             {%endfor%}
                             </tbody>
@@ -76,3 +139,35 @@
         </div>
     </div>
     {% endblock content %}
+    {% block javascripts %}
+    <script>
+        function updateFilterFields() {
+            // Hide all filters initially
+            document.getElementById("monthly_filter").style.display = "none";
+            document.getElementById("yearly_filter").style.display = "none";
+            document.getElementById("range_filter").style.display = "none";
+            document.getElementById("date_filter").style.display = "none";
+            document.getElementById("department").style.display = "none";
+
+    
+            // Get selected filter type
+            const filterType = document.getElementById("filter_type").value;
+    
+            // Show the appropriate filter fields
+            if (filterType === "monthly") {
+                document.getElementById("monthly_filter").style.display = "block";
+            } else if (filterType === "yearly") {
+                document.getElementById("yearly_filter").style.display = "block";
+            } else if (filterType === "range") {
+                document.getElementById("range_filter").style.display = "block";
+            } else if (filterType === "date") {
+                document.getElementById("date_filter").style.display = "block";
+            }else if (filterType === "department") {
+                document.getElementById("department").style.display = "block";
+            }
+        }
+    
+        // Run on page load to restore state
+        document.addEventListener("DOMContentLoaded", updateFilterFields);
+    </script>
+    {% endblock javascripts %}

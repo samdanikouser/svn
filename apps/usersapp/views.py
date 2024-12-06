@@ -53,12 +53,11 @@ def check_range(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         item_id = data['item_id']
-        entered_min = float(data['entered_min'])
-        entered_max = float(data['entered_max'])
+        entered_temp = float(data['temperature_value'])
         item= HaccpAdminData.objects.get(id=int(item_id))
 
         # Check if entered values are out of range
-        if entered_min < item.min_temp or entered_max > item.max_temp:
+        if entered_temp < item.min_temp or entered_temp > item.max_temp:
             corrective_actions = list(item.corrective_action.filter(status=True).values('id','name'))
             return JsonResponse({"out_of_range": True, "corrective_actions": corrective_actions})
 
@@ -68,12 +67,10 @@ def check_range(request):
 @csrf_exempt
 def save_data(request):
     if request.method == 'POST':
-        print("samdani")
         data = json.loads(request.body)
         user_data = DailyUpdates()
         user_data.haccp_link = HaccpAdminData.objects.get(id=int(data['item_id']))
-        user_data.min_value = data['entered_min']
-        user_data.max_value = data['entered_max']
+        user_data.temperature_value = data['temperature_value']
         user_data.haccp_link_time_given = data['time']
         if 'corrective_actions' in data:
             for actions in data.get('corrective_actions', []):

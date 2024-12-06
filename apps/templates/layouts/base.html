@@ -12,6 +12,7 @@
 =========================================================
 
  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+ {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,6 +37,7 @@
   <link href="/static/assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="/static/assets/demo/demo.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/sideslide.css' %}">
 
   <!-- Specific Page CSS goes HERE  -->
   {% block stylesheets %}{% endblock stylesheets %}
@@ -44,7 +46,10 @@
 
 <body class="">
   <div class="wrapper ">
+    {% if user_role == 'admin' or user_role == 'manager' or user_role == 'supervisor' or user_role == 'line_staff' %}
+
         {% include 'includes/sidenav.html' %}
+        {% endif %}
 
     <div class="main-panel">
 
@@ -64,7 +69,7 @@
     </div>
   </div>
 
-  {% include 'includes/fixed-plugin.html' %}
+  <!-- {% include 'includes/fixed-plugin.html' %} -->
 
   {% include 'includes/scripts.html' %}
 
@@ -91,8 +96,6 @@
   });
 });
 
-  </script>
-<script>
 document.addEventListener('DOMContentLoaded', function() {
     var messages = document.querySelectorAll('.messages .message');
     console.log('Found messages:', messages);
@@ -112,9 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('No messages found.');
     }
 });
-
-
-
 </script>
   {% block javascripts %} 
 

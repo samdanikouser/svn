@@ -8,8 +8,7 @@ from apps.haccp.models import HaccpAdminData
 class DailyUpdates(models.Model):
     id = models.AutoField(primary_key=True)
     haccp_link = models.ForeignKey(HaccpAdminData, on_delete=models.CASCADE,null=True,blank=True)
-    min_value = models.FloatField()
-    max_value = models.FloatField()
+    temperature_value = models.FloatField()
     haccp_link_time_given = models.TimeField(null=True,blank=True)
     corrective_actions = models.TextField(null=True,blank=True)
     text_message = models.TextField(null=True,blank=True)

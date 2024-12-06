@@ -15,5 +15,6 @@ urlpatterns = [
     path("location", include("apps.location.urls")),
     path("role", include("apps.roles.urls")),
     path("user", include("apps.usersapp.urls")),
-    path("personalhygiene",include("apps.personalhygiene.urls"))
+    path("personalhygiene",include("apps.personalhygiene.urls")),
+    path("department",include("apps.department.urls"))
 ]

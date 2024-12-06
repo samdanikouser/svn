@@ -36,12 +36,12 @@
                                     <table class="table">
                                         <thead class=" text-primary">
                                         <tr>
-                                            <th><input type="checkbox" disabled %}></th>
-                                            <th scope="col">Data Entered Date and Time</th>
+                                            <th><input type="checkbox" id="check-all-{{ forloop.counter }}" onclick="toggleAllCheckboxes('{{ forloop.counter }}')">
+                                            </th>
+                                            <th scope="col">Logged Date/Time</th>
                                             <th scope="col">Employee</th>
                                             <th scope="col">Location</th>
-                                            <th scope="col">Min Temp</th>
-                                            <th scope="col">Max Temp</th>
+                                            <th scope="col">Temp</th>
                                             <th scope="col">Corrective Action and comments</th>
                                             {%if user_role != 'supervisor'%}
                                             <th scope="col">Approved By</th>
@@ -56,8 +56,7 @@
                                                 <td style="color:black">{{daily_update.created_at}}</td>
                                                 <td style="color:black">{{daily_update.created_by.name}}</td>
                                                 <td style="color:black">{{daily_update.haccp_link.used_for}}</td>
-                                                <td style="color:black">{{daily_update.min_value}}</td>
-                                                <td style="color:black">{{daily_update.max_value}}</td>
+                                                <td style="color:black">{{daily_update.temperature_value}}</td>
                                                 <td style="color:black">{{daily_update.corrective_actions}}{{daily_update.text_message}}</td>
                                                 {%if user_role != 'supervisor'%}
                                                 <td style="color:black">{{daily_update.supervisor_approved_by}}</td>
@@ -105,27 +104,47 @@ function toggleDropdown(dropdownId) {
     }
 }
 
-// Toggle function for accordion-style activity content
 function toggleActivity(locationId) {
-    // Close all activities
-    var allActivities = document.querySelectorAll('.activity-section .activity-content');
-    allActivities.forEach(function(activity) {
+    // Find the clicked activity content
+    const activity = document.querySelector('#' + locationId + ' .activity-content');
+    const button = document.querySelector('#' + locationId + ' .accordion-btn');
+
+    // Check if the activity content is currently open
+    if (activity.classList.contains('open')) {
+        // If open, close it
         activity.classList.remove('open');
-    });
-
-    var allButtons = document.querySelectorAll('.accordion-btn');
-    allButtons.forEach(function(button) {
         button.classList.remove('active');
-    });
+    } else {
+        // If not open, open it
+        activity.classList.add('open');
+        button.classList.add('active');
 
-    // Show the selected activity
-    var activity = document.querySelector('#' + locationId + ' .activity-content');
-    var button = document.querySelector('#' + locationId + ' .accordion-btn');
-
-    if (activity && button) {
-        activity.classList.toggle('open');
-        button.classList.toggle('active');
+        // Optionally, close all other sections when opening the clicked one (accordion-style)
+        const allActivities = document.querySelectorAll('.activity-section .activity-content');
+        allActivities.forEach(function (otherActivity) {
+            if (otherActivity !== activity) {
+                otherActivity.classList.remove('open');
+                const otherButton = otherActivity.previousElementSibling;
+                if (otherButton) {
+                    otherButton.classList.remove('active');
+                }
+            }
+        });
     }
+}
+
+
+function toggleAllCheckboxes(locationIndex) {
+    // Get all checkboxes within the current location section
+    const checkboxes = document.querySelectorAll(`#location${locationIndex} input[name="selected_tasks"]`);
+    
+    // Get the "Check All" checkbox to check its status (checked or unchecked)
+    const checkAllBox = document.getElementById(`check-all-${locationIndex}`);
+
+    // Loop through each checkbox and set its checked status based on the "Check All" checkbox
+    checkboxes.forEach(function (checkbox) {
+        checkbox.checked = checkAllBox.checked;
+    });
 }
 
 </script>

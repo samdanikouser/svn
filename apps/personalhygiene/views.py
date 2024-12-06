@@ -12,20 +12,49 @@ from django.core.files.storage import default_storage
 @login_required
 @role_required(allowed_roles=['admin', 'managers'])
 def personalhygiene_list(request):
-    if request.method == "POST":
+    if request.method == "GET":
+        filter_type = request.GET.get('filter_type', '')
         inspected_date = request.GET.get('inspected_date', '')
         inspected_by = request.GET.get('inspected_by', '')
+        start_date = request.GET.get('start_date', '')
+        end_date = request.GET.get('end_date', '')
+        month = request.GET.get('month', '')
+        year = request.GET.get('year', '')
+
+        # Start with all records
         personal_hygiene_records = PersonalHygiene.objects.all()
-        if inspected_date:
+
+        # Apply filters based on filter type
+        if filter_type == "date" and inspected_date:
             personal_hygiene_records = personal_hygiene_records.filter(inspected_date=inspected_date)
+        elif filter_type == "range" and start_date and end_date:
+            personal_hygiene_records = personal_hygiene_records.filter(inspected_date__range=[start_date, end_date])
+        elif filter_type == "monthly" and month:
+            personal_hygiene_records = personal_hygiene_records.filter(inspected_date__month=month)
+        elif filter_type == "yearly" and year:
+            personal_hygiene_records = personal_hygiene_records.filter(inspected_date__year=year)
+        elif filter_type == "department":
+            personal_hygiene_records = personal_hygiene_records.filter(employee__department="")
+
+        
+
+        # Filter by inspected by (if provided)
         if inspected_by:
             personal_hygiene_records = personal_hygiene_records.filter(inspected_by__icontains=inspected_by)
+
         return render(request, 'personal_hygiene/list.html', {
             'records': personal_hygiene_records,
+            'filter_type': filter_type,
             'inspected_date': inspected_date,
+            'start_date': start_date,
+            'end_date': end_date,
+            'month': month,
+            'year': year,
             'inspected_by': inspected_by,
         })
-    return render(request, 'personal_hygiene/list.html',)
+
+    return render(request, 'personal_hygiene/list.html')
+
 
 @login_required
 @role_required(allowed_roles=['admin','managers','supervisor'])
@@ -38,6 +67,7 @@ def add_personalhygiene(request):
     else:
         user_profiles = UserProfile.objects.filter()
     if request.method == "POST":
+        print(request.POST)
         knowledge_of_personal_hygiene = request.POST.get('knowledge_of_personal_hygiene')
         trimmed_beard_moustache = request.POST.get('trimmed_beard_moustache')
         overall_health = request.POST.get('overall_health')
@@ -59,6 +89,8 @@ def add_personalhygiene(request):
         personal_hygiene.inspected_date = request.POST['inspection_date']
         personal_hygiene.inspected_by = UserProfile.objects.get(user=request.user)
         personal_hygiene.parameters_checked = parameters_checked
+        personal_hygiene.inspector_signature = request.POST['inspector_signature']
+        personal_hygiene.employee_signature = request.POST['employee_signature']
         personal_hygiene.status = True
         personal_hygiene.save()
         photos_of = request.FILES.getlist('photos')
@@ -78,5 +110,6 @@ def delete_personalhygiene(request,id):
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
-def update_personalhygiene(request,id):
-    pass
+def view_personalhygiene(request,id):
+    inspection = PersonalHygiene.objects.get(pk=id)
+    return render(request, 'personal_hygiene/view.html', {'inspection': inspection})

@@ -8,6 +8,8 @@ class PersonalHygiene(models.Model):
     inspected_date = models.DateField(null=True, blank=True)
     inspected_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE,null=True, blank=True,related_name="personal_hygiene_inspector")
     parameters_checked = models.TextField(null=True, blank=True)
+    inspector_signature = models.TextField(null=True, blank=True)
+    employee_signature = models.TextField(null=True, blank=True)
     status = models.BooleanField(default=False)
     photos = models.ManyToManyField('UploadedPhoto', blank=True)
     created = models.DateTimeField(auto_now_add=True)
