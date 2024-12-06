@@ -16,7 +16,7 @@ class GeolocationMiddleware:
         # Get user's IP address
         user_ip = self.get_user_ip(request)
         print(user_ip)
-        if user_ip == "127.0.0.1":  # localhost
+        if user_ip == "94.129.87.47":  # localhost
             user_location = 29.338, 47.675
         else:
              # Get the user's location based on their IP address
