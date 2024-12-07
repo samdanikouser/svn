@@ -1,0 +1,28 @@
+{% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/login.css' %}">
+{% endblock stylesheets %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; padding: 20px;">
+        <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    </div>
+    <div class="login-container">
+        <div class="illustration" style="background: url('{% static "assets/img/culina.png" %}') no-repeat center center; background-size: cover;"></div>
+        <div class="form-container">
+            <h2>Attendance</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="image" accept="image/*" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+<script src="{% static 'assets/js/login/showerror.js' %}"></script>

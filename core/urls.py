@@ -18,7 +18,8 @@ urlpatterns = [
     path("role", include("apps.roles.urls")),
     path("user", include("apps.usersapp.urls")),
     path("personalhygiene",include("apps.personalhygiene.urls")),
-    path("department",include("apps.department.urls"))
+    path("department",include("apps.department.urls")),
+    path("attendance",include("apps.attendance.urls"))
 ]
 
 if settings.DEBUG:

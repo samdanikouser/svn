@@ -39,9 +39,9 @@
            {% else %}
                <p id="error-message" class="error-message" style="color:red;">Please contact admin for assistance.</p>
            {% endif %}
-            <div class="social-buttons">
-                <button class="facebook">Facial Checkin</button>
-            </div>
+           <div class="social-buttons">
+            <button class="facebook" onclick="window.location.href='{% url 'recognize_face' %}'">Facial Checkin</button>
+        </div>
         </div>
     </div>
 </body>

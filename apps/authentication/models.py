@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import face_recognition
 
 from apps.department.models import Department
 
@@ -19,12 +20,10 @@ class UserProfile(models.Model):
     status = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # face_data = models.BinaryField()
 
     def __str__(self):
         """string representation of the object"""
         return f"{self.user.username}"
-
 
 # @receiver(post_save, sender=User)
 # def create_user_profile(sender, instance, created, **kwargs):
