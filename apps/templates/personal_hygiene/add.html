@@ -4,7 +4,9 @@
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'assets/css/personal_hygiene_add.css' %}">
 {% endblock stylesheets %}
+
 {% block title %}Personal Hygiene Inspection{% endblock %}
+
 {% block content %}
 {% if messages %}
     <div class="messages">
@@ -17,13 +19,14 @@
 {% endif %}
 
 <div style="display: flex; justify-content: space-between; padding: 20px;">
-        <a href="javascript:history.back()" class="btn btn-primary btn-sm d-flex align-items-center" style="text-decoration: none; font-size: 16px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm d-flex align-items-center" style="text-decoration: none; font-size: 16px;">
         <i class="material-icons" style="font-size: 20px; margin-right: 8px;">arrow_back</i> Back
     </a>
     {% if user_role == 'admin' or user_role == 'manager' %}
     <a href="{% url 'personalhygiene_list' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">List</a>
     {%endif%}
 </div>
+
 <div class="row">
     <div class="col-md-8">
         <div class="card">
@@ -42,22 +45,27 @@
                             {% for profile in user_profiles %}
                                 <option value="{{ profile.id }}"
                                         data-employee-id="{{ profile.employee_id }}"
-                                        data-position="{{ profile.job_title }}">
+                                        data-position="{{ profile.job_title }}"
+                                        data-department="{{ profile.department }}">
                                     {{ profile.name }}
                                 </option>
                             {% endfor %}
                         </select>
                     </div>
             
-                    <!-- Employee ID and Position (Read-Only) -->
+                    <!-- Employee ID, Position and Department (Read-Only) -->
                     <div class="form-row mb-4">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="employee_id" class="font-weight-bold">Employee ID:</label>
                             <input type="text" id="employee_id" name="employee_id" class="form-control" readonly>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="position" class="font-weight-bold">Position:</label>
                             <input type="text" id="position" name="position" class="form-control" readonly>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="department" class="font-weight-bold">Department:</label>
+                            <input type="text" id="department" name="department" class="form-control" readonly>
                         </div>
                     </div>
             
@@ -67,26 +75,24 @@
                         <input type="date" id="inspection_date" name="inspection_date" class="form-control" readonly>
                     </div>
             
-                   <!-- Parameters to Check -->
+                    <!-- Parameters to Check -->
                     <div class="form-group mb-4">
                         <label for="parameters_checked" class="font-weight-bold">Parameters to Check:</label>
-                        
                         <div class="row">
                             <div class="col-md-6">
                                 <label>1. Knowledge of Personal Hygiene:</label>
                                 <select name="knowledge_of_personal_hygiene" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Knowledge of Personal Hygiene : Yes">Yes</option>
+                                    <option value="Knowledge of Personal Hygiene : No">No</option>
                                 </select>
                             </div>
-                            
                             <div class="col-md-6">
                                 <label>2. Trimmed/Shaved Beard and Moustache:</label>
                                 <select name="trimmed_beard_moustache" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Trimmed/Shaved Beard and Moustache : Yes">Yes</option>
+                                    <option value="Trimmed/Shaved Beard and Moustache : No">No</option>
                                 </select>
                             </div>
                         </div>
@@ -96,17 +102,16 @@
                                 <label>3. Overall Health:</label>
                                 <select name="overall_health" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Overall Health : Yes">Yes</option>
+                                    <option value="Overall Health : No">No</option>
                                 </select>
                             </div>
-                            
                             <div class="col-md-6">
                                 <label>4. Short Nails:</label>
                                 <select name="short_nails" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Short Nails : Yes">Yes</option>
+                                    <option value="Short Nails : No">No</option>
                                 </select>
                             </div>
                         </div>
@@ -116,17 +121,16 @@
                                 <label>5. Overall Cleanliness:</label>
                                 <select name="overall_cleanliness" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Overall Cleanliness : Yes">Yes</option>
+                                    <option value="Overall Cleanliness : No">No</option>
                                 </select>
                             </div>
-                            
                             <div class="col-md-6">
                                 <label>6. Cleaned Hands:</label>
                                 <select name="cleaned_hands" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Cleaned Hands : Yes">Yes</option>
+                                    <option value="Cleaned Hands : No">No</option>
                                 </select>
                             </div>
                         </div>
@@ -136,17 +140,16 @@
                                 <label>7. Proper Uniform:</label>
                                 <select name="proper_uniform" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Proper Uniform : Yes">Yes</option>
+                                    <option value="Proper Uniform : No">No</option>
                                 </select>
                             </div>
-                            
                             <div class="col-md-6">
                                 <label>8. Trimmed Hair:</label>
                                 <select name="trimmed_hair" class="form-control" required>
                                     <option value="--">--</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Trimmed Hair : Yes">Yes</option>
+                                    <option value="Trimmed Hair : No">No</option>
                                 </select>
                             </div>
                         </div>
@@ -155,105 +158,41 @@
                     <!-- File Upload -->
                     <div class="form-group mb-4">
                         <label for="photos" class="font-weight-bold">Take Photos:</label>
-                        <input 
-                            type="file" 
-                            id="photos" 
-                            name="photos" 
-                            class="form-control" 
-                            accept="image/*" 
-                            capture="camera" 
-                            multiple 
-                            required>
+                        <input type="file" id="photos" name="photos" class="form-control" accept="image/*" capture="camera" multiple required>
                         <div id="fileNameDisplay" class="mt-2"></div>
                     </div>
 
+                    <!-- Signature -->
                     <div class="form-group mb-4">
-                    <div class="row">
-                        <div class="form-group mb-6">
-                            <label for="signature" class="font-weight-bold">Inspector Signature:</label>
-                            <canvas id="signature-pad" name="inspector_signature" style="border: 1px solid #ccc; width: 100%; height: 150px;"></canvas>
-                            <br>
-                            <button type="button" id="clear-signature" class="btn btn-secondary btn-sm">Clear Signature</button>
-                        </div>
-                        <div class="form-group mb-6">
-                            <label for="employuee_signature" class="font-weight-bold">Employee Signature:</label>
-                            <canvas id="employee_signature-pad" name="employee_signature" style="border: 1px solid #ccc; width: 100%; height: 150px;"></canvas>
-                            <br>
-                            <button type="button" id="clear-employee-signature" class="btn btn-secondary btn-sm">Clear Signature</button>
+                        <div class="row">
+                            <div class="form-group mb-6">
+                                <label for="signature" class="font-weight-bold">Inspector Signature:</label>
+                                <canvas id="signature-pad" name="inspector_signature" style="border: 1px solid #ccc; width: 100%; height: 150px;"></canvas>
+                                <br>
+                                <button type="button" id="clear-signature" class="btn btn-secondary btn-sm">Clear Signature</button>
+                            </div>
+                            <div class="form-group mb-6">
+                                <label for="employee_signature" class="font-weight-bold">Employee Signature:</label>
+                                <canvas id="employee_signature-pad" name="employee_signature" style="border: 1px solid #ccc; width: 100%; height: 150px;"></canvas>
+                                <br>
+                                <button type="button" id="clear-employee-signature" class="btn btn-secondary btn-sm">Clear Signature</button>
+                            </div>
                         </div>
                     </div>
-                    </div>
-                   
             
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary btn-lg btn-block">Submit Inspection</button>
                 </form>
             </div>
-            
         </div>
     </div>
 </div>
 {% endblock %}
+
 {% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        // Set today's date in the inspection_date field
-        const today = new Date().toISOString().split('T')[0];
-        $('#inspection_date').val(today);
-
-        // Populate employee ID and position based on selected employee
-        $('#employee').on('change', function () {
-            const selectedOption = $(this).find(':selected');
-            const employeeId = selectedOption.data('employee-id');
-            const position = selectedOption.data('position');
-
-            $('#employee_id').val(employeeId);
-            $('#position').val(position);
-        });
-
-        // Handle file input change
-        const photosInput = document.getElementById('photos');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-
-        photosInput.addEventListener('change', function (event) {
-            const files = event.target.files;
-            fileNameDisplay.innerHTML = ''; // Clear previous thumbnails
-
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        // Create and display an image thumbnail
-                        const imgPreview = document.createElement('img');
-                        imgPreview.src = e.target.result;
-                        imgPreview.style.width = '100px';
-                        imgPreview.style.margin = '5px';
-                        imgPreview.style.border = '1px solid #ccc';
-                        imgPreview.style.borderRadius = '5px';
-                        imgPreview.style.display = 'inline-block';
-                        fileNameDisplay.appendChild(imgPreview);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Display selected file names
-            const fileNames = Array.from(files).map(file => file.name).join(', ');
-            const fileNamesText = document.createElement('p');
-            fileNamesText.textContent = `Selected files: ${fileNames}`;
-            fileNameDisplay.appendChild(fileNamesText);
-        });
-    });
-
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize Inspector Signature Pad
-        const inspectorCanvas = document.getElementById('signature-pad');
-        const inspectorSignaturePad = new SignaturePad(inspectorCanvas);
-
-        // Initialize Employee Signature Pad
-        const employeeCanvas = document.getElementById('employee_signature-pad');
-        const employeeSignaturePad = new SignaturePad(employeeCanvas);
-
         // Set today's date in the inspection_date field
         const today = new Date().toISOString().split('T')[0];
         $('#inspection_date').val(today);
@@ -263,85 +202,63 @@
             const selectedOption = $(this).find(':selected');
             const employeeId = selectedOption.data('employee-id');
             const position = selectedOption.data('position');
+            const department = selectedOption.data('department');
 
             $('#employee_id').val(employeeId);
             $('#position').val(position);
+            $('#department').val(department);
         });
 
         // Handle file input change
         const photosInput = document.getElementById('photos');
         const fileNameDisplay = document.getElementById('fileNameDisplay');
-
+        
         photosInput.addEventListener('change', function (event) {
             const files = event.target.files;
             fileNameDisplay.innerHTML = ''; // Clear previous thumbnails
 
             Array.from(files).forEach(file => {
                 if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        // Create and display an image thumbnail
-                        const imgPreview = document.createElement('img');
-                        imgPreview.src = e.target.result;
-                        imgPreview.style.width = '100px';
-                        imgPreview.style.margin = '5px';
-                        imgPreview.style.border = '1px solid #ccc';
-                        imgPreview.style.borderRadius = '5px';
-                        imgPreview.style.display = 'inline-block';
-                        fileNameDisplay.appendChild(imgPreview);
-                    };
-                    reader.readAsDataURL(file);
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.alt = file.name;
+                    img.style.maxWidth = '100px';
+                    img.style.margin = '5px';
+                    fileNameDisplay.appendChild(img);
                 }
             });
-
-            // Display selected file names
-            const fileNames = Array.from(files).map(file => file.name).join(', ');
-            const fileNamesText = document.createElement('p');
-            fileNamesText.textContent = `Selected files: ${fileNames}`;
-            fileNameDisplay.appendChild(fileNamesText);
         });
 
-        // Clear inspector signature on button click
-        document.getElementById('clear-signature').addEventListener('click', function () {
-            inspectorSignaturePad.clear();
-        });
+        // Signature pad setup for inspector signature
+        const signaturePad = new SignaturePad(document.getElementById('signature-pad'));
+        const clearSignatureBtn = document.getElementById('clear-signature');
+        clearSignatureBtn.addEventListener('click', () => signaturePad.clear());
 
-        // Clear employee signature on button click
-        document.getElementById('clear-employee-signature').addEventListener('click', function () {
-            employeeSignaturePad.clear();
-        });
+        // Signature pad setup for employee signature
+        const employeeSignaturePad = new SignaturePad(document.getElementById('employee_signature-pad'));
+        const clearEmployeeSignatureBtn = document.getElementById('clear-employee-signature');
+        clearEmployeeSignatureBtn.addEventListener('click', () => employeeSignaturePad.clear());
 
-        // Include signature image data when submitting the form
-        document.getElementById('personalHygieneForm').addEventListener('submit', function (event) {
-            // Check if inspector's signature is drawn
-            if (inspectorSignaturePad.isEmpty()) {
-                alert('Please provide the inspector signature');
-                event.preventDefault();  // Prevent form submission if inspector signature is missing
-            } else {
-                const inspectorSignatureData = inspectorSignaturePad.toDataURL();  // Get inspector signature data (as a PNG image)
-                const inspectorSignatureInput = document.createElement('input');
-                inspectorSignatureInput.type = 'hidden';
-                inspectorSignatureInput.name = 'inspector_signature';  // Add inspector signature data to the form
-                inspectorSignatureInput.value = inspectorSignatureData;
-                this.appendChild(inspectorSignatureInput);
-            }
+        // Before submitting the form, serialize the signature data and add it as hidden fields
+        const form = document.getElementById('personalHygieneForm');
+        form.addEventListener('submit', function (event) {
+            // Get the signature data URLs
+            const inspectorSignatureData = signaturePad.isEmpty() ? '' : signaturePad.toDataURL();
+            const employeeSignatureData = employeeSignaturePad.isEmpty() ? '' : employeeSignaturePad.toDataURL();
 
-            // Check if employee's signature is drawn
-            if (employeeSignaturePad.isEmpty()) {
-                alert('Please provide the employee signature');
-                event.preventDefault();  // Prevent form submission if employee signature is missing
-            } else {
-                const employeeSignatureData = employeeSignaturePad.toDataURL();  // Get employee signature data (as a PNG image)
-                const employeeSignatureInput = document.createElement('input');
-                employeeSignatureInput.type = 'hidden';
-                employeeSignatureInput.name = 'employee_signature';  // Add employee signature data to the form
-                employeeSignatureInput.value = employeeSignatureData;
-                this.appendChild(employeeSignatureInput);
-            }
+            // Create hidden inputs for the signature data
+            const inspectorSignatureInput = document.createElement('input');
+            inspectorSignatureInput.type = 'hidden';
+            inspectorSignatureInput.name = 'inspector_signature';
+            inspectorSignatureInput.value = inspectorSignatureData;
+            form.appendChild(inspectorSignatureInput);
+
+            const employeeSignatureInput = document.createElement('input');
+            employeeSignatureInput.type = 'hidden';
+            employeeSignatureInput.name = 'employee_signature';
+            employeeSignatureInput.value = employeeSignatureData;
+            form.appendChild(employeeSignatureInput);
         });
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-
-{% endblock javascripts %}
-
+{% endblock %}

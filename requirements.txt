@@ -17,3 +17,5 @@ openpyxl>=3.0.0
 Pillow==9.2.0
 geocoder==1.38.1
 geopy
+reportlab==3.6.1
+weasyprint==56.0

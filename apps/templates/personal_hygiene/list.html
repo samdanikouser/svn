@@ -40,6 +40,7 @@
                                     <option value="range" {% if filter_type == 'range' %}selected{% endif %}>Date Range</option>
                                     <option value="date" {% if filter_type == 'date' %}selected{% endif %}>Specific Date</option>
                                     <option value="department" {% if filter_type == 'department' %}selected{% endif %}>Department</option>
+                                    <option value="inspected_by" {% if filter_type == 'inspected_by' %}selected{% endif %}>Inspcted By</option>
                                 </select>
                             </div>
                         </div>
@@ -79,18 +80,20 @@
                             </div>
                             <div id="department" class="col-md-4" style="display: none;">
                                 <label for="department">Select Department:</label>
-                                <input type="text" name="department" value="{{ department }}" class="form-control" placeholder="Filter by Department">
+                                <select name="department" id="department" class="form-control">
+                                    {% for department in department %}
+                                    <option value="{{ department.id }}">{{ department.name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <div>
-                            
+                            <div id="inspected_by" class="col-md-4" style="display: none;">
+                                <label for="inspected_by">Filter by Inspector:</label>
+                                <input type="text" name="inspected_by" value="{{ inspected_by }}" class="form-control" placeholder="Filter by Inspector">
                             </div>
                         </div>
                     
                         <!-- Inspector Filter and Buttons -->
                         <div class="row mt-3">
-                            <div class="col-md-4">
-                                <input type="text" name="inspected_by" value="{{ inspected_by }}" class="form-control" placeholder="Filter by Inspector">
-                            </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                                 <a href="{% url 'personalhygiene_list' %}" class="btn btn-secondary">Clear</a>
@@ -99,7 +102,9 @@
                     </form>
                     
                     {% if records%}
-                
+                    <a href="{% url 'download_filtered_pdf' %}?filter_type={{ filter_type }}&month={{ month }}&year={{ year }}&start_date={{ start_date }}&end_date={{ end_date }}&inspected_date={{ inspected_date }}&department={{ department }}&inspected_by={{ inspected_by }}" class="btn btn-danger">
+                        Download PDF
+                    </a>
                     <div class="table-responsive">
                         <table class="table">
                             <thead class=" text-primary">
@@ -120,7 +125,7 @@
                                 <td style="color:black">{{record.employee.name}}</td>
                                 <td style="color:black">{{record.employee.employee_id}}</td>
                                 <td style="color:black">{{record.employee.department}}</td>
-                                <td style="color:black">{{record.inspected_by}}</td>
+                                <td style="color:black">{{record.inspected_by.name}}</td>
                                 <td style="color:black">{{record.inspected_date}}</td>
                                 <td>
                                     <a href="/personalhygiene/view/{{record.id}}"
@@ -164,6 +169,8 @@
                 document.getElementById("date_filter").style.display = "block";
             }else if (filterType === "department") {
                 document.getElementById("department").style.display = "block";
+            }else if (filterType === "inspected_by") {
+                document.getElementById("inspected_by").style.display = "block";
             }
         }
     

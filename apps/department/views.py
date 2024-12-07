@@ -23,8 +23,9 @@ def add_department(request):
             department = form.save(commit=False)
             department.save()
             messages.success(request, 'Department Added successfully!')
-            print("samdani")
-            return redirect("/department/list/")
+            return redirect("/department/list")
+        else:
+            print(form.errors) 
     return render(request, "department/add.html", {"form": DepartmentForm()})
 
 
@@ -33,10 +34,9 @@ def add_department(request):
 def delete_department(request, id):
     department = Department.objects.get(pk=id)
     if request.method == "POST":
-        print("samdani deke")
         department.delete()
         messages.success(request, 'Department Deleted successfully!')
-        return redirect("department/list")
+        return redirect("/department/list")
     return render(request,
                   'department/delete.html',
                   {'department': department})

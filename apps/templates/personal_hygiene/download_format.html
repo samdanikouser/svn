@@ -1,0 +1,144 @@
+{% load filters %}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <!-- Centered Heading -->
+                <h4 class="card-title font-weight-bold" style="padding: 50px;">Personal Hygiene Inspection Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="container mt-4">
+                    <!-- Personal Hygiene Record Section -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Inspection Details</h5>
+                            <p><strong>Employee:</strong> {{ personal_hygiene.employee.name }}</p>
+                            <p><strong>Inspection Date:</strong> {{ personal_hygiene.inspected_date }}</p>
+                            <p><strong>Inspected By:</strong> {{ personal_hygiene.inspected_by.name }}</p>
+
+                            <!-- Parameters Checked with New Line After Yes/No -->
+                            <p><strong>Parameters Checked:</strong>
+                                {% if personal_hygiene.parameters_checked %}
+                                    {{ personal_hygiene.parameters_checked|replace_yes_no|safe }}
+                                {% else %}
+                                    No parameters available.
+                                {% endif %}
+                            </p>
+
+                            <p><strong>Status:</strong>
+                                {% if personal_hygiene.status %}
+                                    <span class="badge bg-success">Checked</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Not checked</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Signature Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-center">Inspector's Signature</h5>
+                            <div class="border p-3">
+                                {% if personal_hygiene.inspector_signature %}
+                                    <img src="{{ personal_hygiene.inspector_signature }}" alt="Inspector's Signature" class="img-fluid rounded" style="max-width: 150px;">
+                                {% else %}
+                                    <p class="text-muted text-center">No signature available.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-center">Employee's Signature</h5>
+                            <div class="border p-3">
+                                {% if personal_hygiene.employee_signature %}
+                                    <img src="{{ personal_hygiene.employee_signature }}" alt="Employee's Signature" class="img-fluid rounded" style="max-width: 150px;">
+                                {% else %}
+                                    <p class="text-muted text-center">No signature available.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photo Gallery -->
+                    <h4 class="text-primary text-center mt-4">Inspection Photos</h4>
+                    <div class="row">
+                        {% for photo_url in photo_urls %}
+                            <div class="col-md-3 mb-3">
+                                <div class="card shadow-sm">
+                                    <img src="{{ photo_url }}" class="card-img-top img-thumbnail" alt="Inspection Photo" style="max-width: 100%; height: auto;">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styling for improved presentation -->
+<style>
+    .card-header {
+        font-weight: bold;
+    }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 1.25rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .img-thumbnail {
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        padding: 0.25rem;
+    }
+
+    .border {
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+
+    .shadow-lg {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    /* Limit size of images */
+    .card-img-top {
+        max-width: 100%;
+        height: auto;
+        max-height: 150px; /* Limit height for consistent image size */
+        object-fit: cover;
+    }
+
+    .img-thumbnail {
+        max-width: 150px; /* Limit image size for signatures */
+    }
+</style>

@@ -1,6 +1,7 @@
 {% extends "layouts/base.html" %}
+{% load filters %}
 
-{% block title %}Update Location{% endblock %}
+{% block title %}View Inspection{% endblock %}
 
 {% block content %}
 {% if messages %}
@@ -12,7 +13,6 @@
         {% endfor %}
     </div>
 {% endif %}
-
 <div style="display: flex; justify-content: space-between; padding: 20px;">
     <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
 </div>
@@ -20,40 +20,71 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header card-header-primary">
-                <h4 class="card-title">Update Location</h4>
+                <h4 class="card-title">Personal Hygiene Inspection Details</h4>
             </div>
             <div class="card-body">
-                <form action="/location/update/{{location.id}}" method="POST">
-                    {% csrf_token %}
-                    <!--Employee Name-->
-                    <div class="mb-3">
-                        <label>Location name</label>
-                        {{ form.name}}
-                        {% if form.errors.name %}
-                        <div class="alert alert-danger">
-                            <strong> {{form.errors.name.as_text|cut:"* " }}</strong>
+                <div class="container mt-4">                    
+                    <!-- Personal Hygiene Record -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                            <p><strong>Employee:</strong>{{ personal_hygiene.employee.name }}</p>
+                            <p><strong>Inspection Date:</strong> {{ personal_hygiene.inspected_date }}</p>
+                            <p><strong>Inspected By:</strong> {{ personal_hygiene.inspected_by.name }}</p>
+
+                            <!-- Parameters Checked with New Line After Yes/No -->
+                            <p><strong>Parameters Checked:</strong> 
+                                {% if personal_hygiene.parameters_checked %}
+                                    {{ personal_hygiene.parameters_checked|replace_yes_no|safe  }}
+                                {% else %}
+                                    No parameters available.
+                                {% endif %}
+                            </p>
+                            <p><strong>Status:</strong> {% if personal_hygiene.status %} <span class="badge bg-success">Checked</span> {% else %} <span class="badge bg-danger">Not checked</span> {% endif %}</p>
                         </div>
-                        {% endif %}
                     </div>
-                    <div class="mb-3">
-                        <label>Location Status</label>
-                        {{ form.status}}
-                        {% if form.errors.status %}
-                        <div class="alert alert-danger">
-                            <strong> {{form.errors.status.as_text|cut:"* " }}</strong>
+
+                    <!-- Signatures -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Inspector's Signature</h5>
+                            <div class="border p-3">
+                                {% if personal_hygiene.inspector_signature %}
+                                    <img src="{{ personal_hygiene.inspector_signature }}" alt="Inspector's Signature" class="img-fluid">
+                                {% else %}
+                                    <p>No signature available.</p>
+                                {% endif %}
+                            </div>
                         </div>
-                        {% endif %}
+                        <div class="col-md-6">
+                            <h5>Employee's Signature</h5>
+                            <div class="border p-3">
+                                {% if personal_hygiene.employee_signature %}
+                                    <img src="{{ personal_hygiene.employee_signature }}" alt="Employee's Signature" class="img-fluid">
+                                {% else %}
+                                    <p>No signature available.</p>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <button class="btn btn-success">
-                            Update Location
-                        </button>
+
+                    <!-- Photos -->
+                    <h4>Photos</h4>
+                    <div class="row">
+                        {% for photo in personal_hygiene.photos.all %}
+                        <div class="col-md-3 mb-3">
+                            <div class="card">
+                                <img src="{{ photo.photo.url }}" class="card-img-top img-thumbnail" alt="Photo">
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
-                </form>
+
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 
 {% endblock %}
-

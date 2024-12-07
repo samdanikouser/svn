@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from apps.authentication.models import UserProfile
+from apps.department.models import Department
 
 
 class LoginForm(forms.Form):
@@ -131,6 +132,12 @@ class UserUpdateForm(ModelForm):
         required=False
     )
 
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.all(),
+        widget=forms.Select(attrs={'readonly': 'readonly', 'class': 'form-control'}),  # Use readonly
+        required=False
+    )
+
     data_of_joining = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -162,18 +169,19 @@ class UserUpdateForm(ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['user','role', 'name', 'employee_id', 'data_of_joining', 'job_title', 'status']
+        fields = ['user','role', 'name', 'employee_id', 'department','data_of_joining', 'job_title', 'status']
 
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['role', 'name', 'employee_id', 'data_of_joining', 'job_title', 'status']
+        fields = ['role', 'name', 'employee_id','department','data_of_joining', 'job_title', 'status']
         widgets = {
             'status': forms.CheckboxInput(attrs={'class': 'form-control'}),
             'role': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'employee_id': forms.NumberInput(attrs={'class': 'form-control'}),
+            'department': forms.Select(attrs={'class': 'form-control'}),
             'data_of_joining': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'job_title': forms.TextInput(attrs={'class': 'form-control'}),
         }

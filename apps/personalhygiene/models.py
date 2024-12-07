@@ -19,7 +19,7 @@ class PersonalHygiene(models.Model):
 
 
 class UploadedPhoto(models.Model):
-    photo = models.ImageField(upload_to='personal_hygiene_photos/')
+    photo = models.ImageField(upload_to='media/personal_hygiene_photos/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

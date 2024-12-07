@@ -50,6 +50,14 @@
                         {% endif %}
                     </div>
                     <div class="mb-3">
+                        {{ form.department}}
+                        {% if form.errors.department %}
+                        <div class="alert alert-danger">
+                            <strong> {{form.errors.department.as_text|cut:"* " }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
                         {{ form.data_of_joining}}
                         {% if form.errors.data_of_joining %}
                         <div class="alert alert-danger">
