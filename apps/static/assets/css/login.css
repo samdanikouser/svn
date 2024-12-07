@@ -1,152 +1,140 @@
-    /* General Body and Background Styling */
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #3b82f6, #f472b6); /* Gradient background */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;  /* Full viewport height */
-        flex-direction: column; /* Stack logo and forms vertically */
-        overflow: hidden;  /* Prevents overflow if the content doesn't fit */
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Container to center the content */
-    .login-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Center the content horizontally */
-        justify-content: center;
-        width: 100%;
-        text-align: center;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    /* Logo Styling */
-    .logo-container {
-        margin-bottom: 2rem; /* Space between logo and forms */
-    }
+        .login-container {
+            display: flex;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+        }
 
-    .logo {
-        width: 200px;
-    }
+        .illustration {
+            flex: 1;
+            background-size: contain;
+            display: block;
+        }
 
-    /* Container for Login and Face Login forms */
-    .login-form-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 80%;
-        max-width: 1000px; /* Max width for form container */
-    }
+        .form-container {
+            flex: 1;
+            padding: 40px 20px;
+        }
 
-    /* Login box styling */
-    .login-box {
-        background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
-        padding: 2rem;
-        width: 350px;
-        border-radius: 8px;
-        text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        color: white;
-        margin-right: 2rem; /* Space between login box and face login */
-    }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    /* Title styling */
-    .login-box h2 {
-        margin-bottom: 1.5rem;
-        font-size: 1.8rem;
-    }
+        .options a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
 
-    /* Input group styling */
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+
+        .social-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .social-buttons button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .social-buttons .facebook {
+            background-color: #3b5998;
+            color: #fff;
+        }
+
+        .social-buttons .twitter {
+            background-color: #1da1f2;
+            color: #fff;
+        }
+
+        /* Input group styling */
     .input-group {
-        margin-bottom: 1rem;
+        margin-bottom: 15px
     }
 
     .input-group input,
     .input-group select {
         width: 100%;
         padding: 0.8rem;
-        border: none;
-        border-radius: 4px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
         font-size: 1rem;
-        background: rgba(255, 255, 255, 0.2); /* Slightly transparent white background */
-        color: white;
+        background: rgba(245, 239, 239, 0.2); /* Slightly transparent white background */
+        color: rgb(8, 8, 8);
         outline: none;
     }
 
-    .input-group input::placeholder,
-    .input-group select {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* Options styling for Remember Me and Forgot Password */
-    .options {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-    .options a {
-        color: rgba(255, 255, 255, 0.8);
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .options a:hover {
-        text-decoration: underline;
-    }
-
-    /* Button styling */
-    .login-button {
-        width: 100%;
-        padding: 0.8rem;
-        border: none;
-        border-radius: 4px;
-        background-color: rgba(255, 255, 255, 0.3); /* Slightly transparent white background */
-        font-size: 1rem;
-        color: white;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .login-button:hover {
-        background-color: rgba(255, 255, 255, 0.5); /* Lighter on hover */
-    }
-
-    /* Styling for the Face Login Section */
-    .face-login {
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 2rem;
-        width: 350px;
-        border-radius: 8px;
-        text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        color: white;
-    }
-
-    .face-login-button {
-        width: 100%;
-        padding: 0.8rem;
-        border: none;
-        border-radius: 4px;
-        background-color: rgba(255, 255, 255, 0.3);
-        font-size: 1rem;
-        color: white;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .face-login-button:hover {
-        background-color: rgba(255, 255, 255, 0.5);
-    }
-
-    /* Error message styling */
     .error-message {
         color: red;
         font-size: 1rem;
         margin-top: 10px;
         display: none;  /* Hidden by default */
     }
+
+    .input-group input::placeholder,
+    .input-group select {
+        color: rgba(7, 6, 6, 0.7);
+    }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .illustration {
+                display: none;
+            }
+
+            .form-container {
+                flex: none;
+                width: 100%;
+            }
+        }
