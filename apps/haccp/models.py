@@ -44,8 +44,8 @@ class HaccpAdminData(models.Model):
 
 class CoolingData(models.Model):
     id = models.AutoField(primary_key=True)
-    storage_location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
-    sub_storage_location = models.ForeignKey('ControlPoint', on_delete=models.CASCADE, null=True, blank=True)
+    storage_location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
+    sub_storage_location = models.ForeignKey(ControlPoint, on_delete=models.CASCADE, null=True, blank=True)
     food_item = models.CharField(max_length=255)  # Food item name or description
     internal_temp_at_0_hrs = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # Temperature at 0 hours
     internal_temp_at_1_hrs = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # Temperature at 1 hour
@@ -77,6 +77,7 @@ class CookingData(models.Model):
     id = models.AutoField(primary_key=True)
     storage_location = models.ForeignKey(Location, on_delete=models.CASCADE,null=True, blank=True)
     sub_storage_location = models.ForeignKey(ControlPoint, on_delete=models.CASCADE,null=True, blank=True)
+    
 
 
 class ReHeatingData(models.Model):
