@@ -1,10 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-import geocoder
 from apps.authentication.decorators import role_required
 from apps.correctiveaction.models import CorrectiveAction
-from apps.location.models import Location
+from apps.location.models import ControlPoint, Location
 from apps.roles.models import Roles
 from apps.haccp.models import HaccpAdminData
 from django.template import loader
@@ -33,35 +32,23 @@ def HaccpDelete(request,id):
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def haccpHome(request, name):
-    context = {"name": name}
+    control_point_name = ControlPoint.objects.filter(location__name = name,daily_activity=True)
+    context = {"name": name,"control_point_name":control_point_name}
     html_template = loader.get_template('haccp/haccphome.html')
     return HttpResponse(html_template.render(context, request))
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
-def storagelocation(request, name, status):
-    corrective_action = CorrectiveAction.objects.filter(status=True)
+def storagelocation(request, name, control_point):
+    corrective_action = CorrectiveAction.objects.filter(status=True,control_point__location__name=name,control_point__name=control_point)
     roles = Roles.objects.all()
     return render(request, 'storageName/storageData.html',
-                  {"roles": roles, "name": name, "status": status,
+                  {"roles": roles, "name": name, "status": control_point,
                    "corrective_action": corrective_action})
-
-import geocoder
-from geopy.distance import geodesic
-
-allowed_location = (29.3368231, 47.6751726)
-radius_in_km = 2  
-
-
-def is_within_allowed_location(user_latitude, user_longitude):
-    user_location = (user_latitude, user_longitude)
-    distance = geodesic(allowed_location, user_location).kilometers
-    return distance <= radius_in_km
 
 @login_required
 @role_required(allowed_roles=['admin','managers'])
 def storagelocationAdminData(request, name, status):
-
     if request.method == "POST":
         storage_location = name
         sub_storage_location = status
@@ -79,7 +66,7 @@ def storagelocationAdminData(request, name, status):
         for num_of_sub_storage in range(1,no_of_used_for+1):
             admin_data = HaccpAdminData()
             admin_data.storage_location = Location.objects.get(name = storage_location)
-            admin_data.sub_storage_location =sub_storage_location
+            admin_data.sub_storage_location =ControlPoint.objects.get(location__name =storage_location,name = sub_storage_location)
             admin_data.name =task_name
             admin_data.used_for =used_for+str(num_of_sub_storage)
             admin_data.assign_task_to =assign_task_to
@@ -93,4 +80,4 @@ def storagelocationAdminData(request, name, status):
             corrective_actions = CorrectiveAction.objects.filter(id__in=corrective_action)
             admin_data.corrective_action.set(corrective_actions)
     messages.success(request, f'{sub_storage_location} task stored successful!')
-    return render(request, 'haccp/list.html', {"status": status, "name": name})
+    return redirect("/haccp/list")

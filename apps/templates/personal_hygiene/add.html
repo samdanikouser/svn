@@ -2,190 +2,304 @@
 {% load static %}
 
 {% block stylesheets %}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@material-ui/core@5.0.0-alpha.40/dist/material-ui-core.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{% static 'assets/css/personal_hygiene_add.css' %}">
+<style>
+    body {
+        background-color: #f7f7f7;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .form-container {
+        max-width: 1200px;
+        margin: 50px auto;
+        background-color: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #9c27b0;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        flex: 1;
+        min-width: 220px;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #555;
+        transition: all 0.3s ease;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: #3f51b5;
+        outline: none;
+    }
+
+    .signature-container {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+        margin-top: 40px;
+    }
+    .form-group .bmd-label-static {
+    top: -21px;
+}
+    .signature-box {
+        width: 48%;
+        border: 2px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #fafafa;
+        text-align: center;
+    }
+
+    .signature-box canvas {
+        width: 100%;
+        height: 180px;
+        border-radius: 8px;
+        background-color: #fff;
+        border: 2px solid #ddd;
+    }
+
+    .signature-box button {
+        margin-top: 12px;
+        padding: 8px 20px;
+        background-color: #3f51b5;
+        color: white;
+        font-size: 14px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .signature-box button:hover {
+        background-color: #303f9f;
+    }
+
+    .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .form-buttons .btn {
+        padding: 14px 30px;
+        background-color: #9c27b0;
+        color: white;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-buttons .btn:hover {
+        background-color: #303f9f;
+    }
+
+    .alert {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 6px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border-color: #bee5eb;
+    }
+</style>
 {% endblock stylesheets %}
 
 {% block title %}Personal Hygiene Inspection{% endblock %}
 
 {% block content %}
-{% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+<div class="form-container">
+    {% if messages %}
+        <div class="alert alert-{{ message.tags }} message">
+            {% for message in messages %}
                 {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-<div style="display: flex; justify-content: space-between; padding: 20px;">
-    <a href="javascript:history.back()" class="btn btn-primary btn-sm d-flex align-items-center" style="text-decoration: none; font-size: 16px;">
-        <i class="material-icons" style="font-size: 20px; margin-right: 8px;">arrow_back</i> Back
-    </a>
-    {% if user_role == 'admin' or user_role == 'manager' %}
-    <a href="{% url 'personalhygiene_list' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">List</a>
-    {%endif%}
-</div>
+    <h2 class="form-header">Personal Hygiene Inspection</h2>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header card-header-primary">
-                <h4 class="card-title">Personal Hygiene Inspection</h4>
-            </div>
-            <div class="card-body">
-                <form method="post" enctype="multipart/form-data" id="personalHygieneForm">
-                    {% csrf_token %}
-                    
-                    <!-- Employee Name Dropdown -->
-                    <div class="form-group mb-4">
-                        <label for="employee" class="font-weight-bold">Employee Name:</label>
-                        <select id="employee" name="employee" class="form-control custom-select" required>
-                            <option value="" selected disabled>Select Employee</option>
-                            {% for profile in user_profiles %}
-                                <option value="{{ profile.id }}"
-                                        data-employee-id="{{ profile.employee_id }}"
-                                        data-position="{{ profile.job_title }}"
-                                        data-department="{{ profile.department }}">
-                                    {{ profile.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-            
-                    <!-- Employee ID, Position and Department (Read-Only) -->
-                    <div class="form-row mb-4">
-                        <div class="form-group col-md-4">
-                            <label for="employee_id" class="font-weight-bold">Employee ID:</label>
-                            <input type="text" id="employee_id" name="employee_id" class="form-control" readonly>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="position" class="font-weight-bold">Position:</label>
-                            <input type="text" id="position" name="position" class="form-control" readonly>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="department" class="font-weight-bold">Department:</label>
-                            <input type="text" id="department" name="department" class="form-control" readonly>
-                        </div>
-                    </div>
-            
-                    <!-- Inspection Date (Read-Only) -->
-                    <div class="form-group mb-4">
-                        <label for="inspection_date" class="font-weight-bold">Inspection Date:</label>
-                        <input type="date" id="inspection_date" name="inspection_date" class="form-control" readonly>
-                    </div>
-            
-                    <!-- Parameters to Check -->
-                    <div class="form-group mb-4">
-                        <label for="parameters_checked" class="font-weight-bold">Parameters to Check:</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>1. Knowledge of Personal Hygiene:</label>
-                                <select name="knowledge_of_personal_hygiene" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Knowledge of Personal Hygiene : Yes">Yes</option>
-                                    <option value="Knowledge of Personal Hygiene : No">No</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label>2. Trimmed/Shaved Beard and Moustache:</label>
-                                <select name="trimmed_beard_moustache" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Trimmed/Shaved Beard and Moustache : Yes">Yes</option>
-                                    <option value="Trimmed/Shaved Beard and Moustache : No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>3. Overall Health:</label>
-                                <select name="overall_health" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Overall Health : Yes">Yes</option>
-                                    <option value="Overall Health : No">No</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label>4. Short Nails:</label>
-                                <select name="short_nails" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Short Nails : Yes">Yes</option>
-                                    <option value="Short Nails : No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>5. Overall Cleanliness:</label>
-                                <select name="overall_cleanliness" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Overall Cleanliness : Yes">Yes</option>
-                                    <option value="Overall Cleanliness : No">No</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label>6. Cleaned Hands:</label>
-                                <select name="cleaned_hands" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Cleaned Hands : Yes">Yes</option>
-                                    <option value="Cleaned Hands : No">No</option>
-                                </select>
-                            </div>
-                        </div>
+    <form method="post" enctype="multipart/form-data" id="personalHygieneForm">
+        {% csrf_token %}
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>7. Proper Uniform:</label>
-                                <select name="proper_uniform" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Proper Uniform : Yes">Yes</option>
-                                    <option value="Proper Uniform : No">No</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label>8. Trimmed Hair:</label>
-                                <select name="trimmed_hair" class="form-control" required>
-                                    <option value="--">--</option>
-                                    <option value="Trimmed Hair : Yes">Yes</option>
-                                    <option value="Trimmed Hair : No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- File Upload -->
-                    <div class="form-group mb-4">
-                        <label for="photos" class="font-weight-bold">Take Photos:</label>
-                        <input type="file" id="photos" name="photos" class="form-control" accept="image/*" capture="camera" multiple required>
-                        <div id="fileNameDisplay" class="mt-2"></div>
-                    </div>
-
-                    <!-- Signature -->
-                    <div class="form-group mb-4">
-                        <div class="row">
-                            <div class="form-group mb-6">
-                                <label for="signature" class="font-weight-bold">Inspector Signature:</label>
-                                <canvas id="signature-pad" name="inspector_signature" style="border: 1px solid #ccc; width: 100%; height: 150px;"></canvas>
-                                <br>
-                                <button type="button" id="clear-signature" class="btn btn-secondary btn-sm">Clear Signature</button>
-                            </div>
-                            <div class="form-group mb-6">
-                                <label for="employee_signature" class="font-weight-bold">Employee Signature:</label>
-                                <canvas id="employee_signature-pad" name="employee_signature" style="border: 1px solid #ccc; width: 100%; height: 150px;"></canvas>
-                                <br>
-                                <button type="button" id="clear-employee-signature" class="btn btn-secondary btn-sm">Clear Signature</button>
-                            </div>
-                        </div>
-                    </div>
-            
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit Inspection</button>
-                </form>
+        <!-- Employee Information Section -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="employee">Employee Name:</label>
+                <select id="employee" name="employee" class="form-control custom-select" required>
+                    <option value="" selected disabled>Select Employee</option>
+                    {% for profile in user_profiles %}
+                        <option value="{{ profile.id }}"
+                                data-employee-id="{{ profile.employee_id }}"
+                                data-position="{{ profile.job_title }}"
+                                data-department="{{ profile.department }}">
+                            {{ profile.name }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
-    </div>
+
+        <!-- Employee ID, Position, and Department -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="employee_id">Employee ID:</label>
+                <input type="text" id="employee_id" name="employee_id" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="position" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <input type="text" id="department" name="department" class="form-control" readonly>
+            </div>
+        </div>
+
+        <!-- Inspection Date -->
+        <div class="form-group">
+            <label for="inspection_date">Inspection Date:</label>
+            <input type="date" id="inspection_date" name="inspection_date" class="form-control" readonly>
+        </div>
+
+        <!-- Parameters to Check Section -->
+        <div class="form-group">
+            <label class="font-weight-bold">Parameters to Check:</label>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>1. Knowledge of Personal Hygiene:</label>
+                    <select name="knowledge_of_personal_hygiene" class="form-control" required>
+                        <option value="--">--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>2. Trimmed/Shaved Beard and Moustache:</label>
+                    <select name="trimmed_beard_moustache" class="form-control" required>
+                        <option value="--">--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Additional Parameters -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>3. Overall Health:</label>
+                    <select name="overall_health" class="form-control" required>
+                        <option value="--">--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>4. Short Nails:</label>
+                    <select name="short_nails" class="form-control" required>
+                        <option value="--">--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Further Parameters -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>5. Overall Cleanliness:</label>
+                    <select name="overall_cleanliness" class="form-control" required>
+                        <option value="--">--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>6. Cleaned Hands:</label>
+                    <select name="cleaned_hands" class="form-control" required>
+                        <option value="--">--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="form-group">
+            <label for="photos">Take Photos:</label>
+            <input type="file" id="photos" name="photos" class="form-control" accept="image/*" capture="camera" multiple required>
+            <div id="fileNameDisplay" class="mt-2"></div>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="signature-container">
+            <div class="signature-box">
+                <label for="signature">Inspector Signature:</label>
+                <canvas id="signature-pad" name="inspector_signature"></canvas>
+                <button type="button" id="clear-signature" class="btn btn-sm">Clear Signature</button>
+            </div>
+            <div class="signature-box">
+                <label for="employee_signature">Employee Signature:</label>
+                <canvas id="employee_signature-pad" name="employee_signature"></canvas>
+                <button type="button" id="clear-employee-signature" class="btn btn-sm">Clear Signature</button>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-lg">Submit Inspection</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
 
@@ -193,11 +307,10 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Set today's date in the inspection_date field
         const today = new Date().toISOString().split('T')[0];
         $('#inspection_date').val(today);
 
-        // Populate employee ID and position based on selected employee
+        // Populate employee info
         $('#employee').on('change', function () {
             const selectedOption = $(this).find(':selected');
             const employeeId = selectedOption.data('employee-id');
@@ -209,7 +322,7 @@
             $('#department').val(department);
         });
 
-        // Handle file input change
+        // File input display
         const photosInput = document.getElementById('photos');
         const fileNameDisplay = document.getElementById('fileNameDisplay');
         
@@ -229,17 +342,6 @@
             });
         });
 
-        // Signature pad setup for inspector signature
-        const signaturePad = new SignaturePad(document.getElementById('signature-pad'));
-        const clearSignatureBtn = document.getElementById('clear-signature');
-        clearSignatureBtn.addEventListener('click', () => signaturePad.clear());
-
-        // Signature pad setup for employee signature
-        const employeeSignaturePad = new SignaturePad(document.getElementById('employee_signature-pad'));
-        const clearEmployeeSignatureBtn = document.getElementById('clear-employee-signature');
-        clearEmployeeSignatureBtn.addEventListener('click', () => employeeSignaturePad.clear());
-
-        // Before submitting the form, serialize the signature data and add it as hidden fields
         const form = document.getElementById('personalHygieneForm');
         form.addEventListener('submit', function (event) {
             // Get the signature data URLs
@@ -259,6 +361,13 @@
             employeeSignatureInput.value = employeeSignatureData;
             form.appendChild(employeeSignatureInput);
         });
+
+        // Signature pads
+        const signaturePad = new SignaturePad(document.getElementById('signature-pad'));
+        document.getElementById('clear-signature').addEventListener('click', () => signaturePad.clear());
+
+        const employeeSignaturePad = new SignaturePad(document.getElementById('employee_signature-pad'));
+        document.getElementById('clear-employee-signature').addEventListener('click', () => employeeSignaturePad.clear());
     });
 </script>
 {% endblock %}

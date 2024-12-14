@@ -7,20 +7,21 @@ from apps.personalhygiene.models import PersonalHygiene, UploadedPhoto
 from ..authentication.decorators import role_required
 from django.contrib import messages
 from django.core.files.storage import default_storage
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 from django.http import HttpResponse
 from django.shortcuts import render
 import os
 from weasyprint import HTML
-from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.conf import settings
+from calendar import month_name
+import zipfile
+
 
 @login_required
 @role_required(allowed_roles=['admin', 'managers'])
 def personalhygiene_list(request):
     if request.method == "GET":
+        months = [(str(i), month_name[i]) for i in range(1, 13)]
         departments = Department.objects.filter(status=True)
         filter_type = request.GET.get('filter_type', '')
         inspected_date = request.GET.get('inspected_date', '')
@@ -56,11 +57,12 @@ def personalhygiene_list(request):
             'month': month,
             'year': year,
             'inspected_by': inspected_by,
-            'department':departments
+            'department':departments,
+            'months':months
         })
 
 
-    return render(request, 'personal_hygiene/list.html',{'department':departments})
+    return render(request, 'personal_hygiene/list.html',{'department':departments,'months':months})
 
 
 @login_required
@@ -121,14 +123,8 @@ def view_personalhygiene(request,id):
     return render(request, 'personal_hygiene/view.html', {'personal_hygiene': inspection})
 
 
-import os
-import zipfile
-from django.conf import settings
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from weasyprint import HTML
-from .models import PersonalHygiene, UploadedPhoto
-
+@login_required
+@role_required(allowed_roles=['admin','managers'])
 def download_filtered_pdf(request):
     # Get filter parameters
     filter_type = request.GET.get('filter_type', '')

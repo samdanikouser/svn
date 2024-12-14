@@ -52,6 +52,9 @@ $ git clone https://github.com/creativetimofficial/material-dashboard-django.git
 $ cd material-dashboard-django
 $
 $ # Virtualenv modules installation (Unix based systems)
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+
 $ virtualenv env
 $ source env/bin/activate
 $

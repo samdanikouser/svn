@@ -1,0 +1,29 @@
+    .form-card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        background: #ffffff;
+    }
+    .btn-primary {
+        background: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    .form-label {
+        font-weight: 500;
+    }
+    .signature-canvas {
+        border: 1px dashed #ced4da;
+        border-radius: 5px;
+        height: 150px;
+    }
+    .page-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }

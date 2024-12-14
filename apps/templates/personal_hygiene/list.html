@@ -52,10 +52,9 @@
                                 <label for="month">Select Month:</label>
                                 <select name="month" id="month" class="form-control">
                                     <option value="">-- Select Month --</option>
-                                    <option value="1" {% if month == '1' %}selected{% endif %}>January</option>
-                                    <option value="2" {% if month == '2' %}selected{% endif %}>February</option>
-                                    <option value="3" {% if month == '3' %}selected{% endif %}>March</option>
-                                    <!-- Add remaining months -->
+                                    {% for value, name in months %}
+                                    <option value="{{ value }}" {% if month == value %}selected{% endif %}>{{ name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                     

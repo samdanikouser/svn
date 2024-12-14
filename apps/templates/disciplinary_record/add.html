@@ -1,0 +1,172 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/disciplinart_record.css' %}">
+{% endblock stylesheets %}
+
+{% block title %}Disciplinary Record{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="page-title">Disciplinary Record</h1>
+
+    <div class="d-flex justify-content-between mb-4">
+        <a href="javascript:history.back()" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <a href="#" class="btn btn-outline-primary btn-sm" id="viewRecordsButton" style="display: none;">View Records</a>
+    </div>
+
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data" id="disciplinaryRecordForm">
+            {% csrf_token %}
+            
+            <!-- Employee Information -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="employee" class="form-label">Employee Name</label>
+                    <select id="employee" name="employee" class="form-select" required>
+                        <option value="" disabled selected>Select Employee</option>
+                        {% for profile in user_profiles %}
+                        <option value="{{ profile.id }}" data-employee-id="{{ profile.employee_id }}" data-position="{{ profile.job_title }}" data-department="{{ profile.department }}">
+                            {{ profile.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="employee_id" class="form-label">Employee ID</label>
+                    <input type="text" id="employee_id" name="employee_id" class="form-control" readonly>
+                </div>
+            </div>
+
+            <!-- Position and Department -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="position" class="form-label">Position</label>
+                    <input type="text" id="position" name="position" class="form-control" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    <input type="text" id="department" name="department" class="form-control" readonly>
+                </div>
+            </div>
+
+            <!-- Issue Category -->
+            <div class="mb-3">
+                <label for="category" class="form-label">Issue Related To</label>
+                <select id="category" name="category" class="form-select" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="food">Food</option>
+                    <option value="hygiene">Hygiene</option>
+                    <option value="attendance">Attendance</option>
+                    <option value="communication">Communication</option>
+                </select>
+            </div>
+
+            <!-- Incident Date -->
+            <div class="mb-3">
+                <label for="incident_date" class="form-label">Incident Date</label>
+                <input type="date" id="incident_date" name="incident_date" class="form-control" readonly>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe the incident in detail" required></textarea>
+            </div>
+
+            <!-- Signatures -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="signature" class="form-label">Supervisor Signature</label>
+                    <canvas id="signature-pad"name="inspector_signature" class="signature-canvas"></canvas>
+                    <button type="button" id="clear-signature" class="btn btn-secondary btn-sm mt-2">Clear</button>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="employee_signature" class="form-label">Employee Signature</label>
+                    <canvas id="employee_signature-pad" name="employee_signature" class="signature-canvas"></canvas>
+                    <button type="button" id="clear-employee-signature" class="btn btn-secondary btn-sm mt-2">Clear</button>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100 mt-3">Submit Record</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script id="employee-records-data" type="application/json">
+    {{ employee_records|safe }}
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('incident_date').value = today;
+
+        const employeeSelect = document.getElementById('employee');
+        employeeSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            document.getElementById('employee_id').value = selectedOption.getAttribute('data-employee-id');
+            document.getElementById('position').value = selectedOption.getAttribute('data-position');
+            document.getElementById('department').value = selectedOption.getAttribute('data-department');
+        });
+
+
+        const form = document.getElementById('disciplinaryRecordForm');
+        form.addEventListener('submit', function (event) {
+            // Get the signature data URLs
+            const inspectorSignatureData = signaturePad.isEmpty() ? '' : signaturePad.toDataURL();
+            const employeeSignatureData = employeeSignaturePad.isEmpty() ? '' : employeeSignaturePad.toDataURL();
+
+            // Create hidden inputs for the signature data
+            const inspectorSignatureInput = document.createElement('input');
+            inspectorSignatureInput.type = 'hidden';
+            inspectorSignatureInput.name = 'inspector_signature';
+            inspectorSignatureInput.value = inspectorSignatureData;
+            form.appendChild(inspectorSignatureInput);
+
+            const employeeSignatureInput = document.createElement('input');
+            employeeSignatureInput.type = 'hidden';
+            employeeSignatureInput.name = 'employee_signature';
+            employeeSignatureInput.value = employeeSignatureData;
+            form.appendChild(employeeSignatureInput);
+        });
+    
+
+        const signaturePad = new SignaturePad(document.getElementById('signature-pad'));
+        document.getElementById('clear-signature').addEventListener('click', () => signaturePad.clear());
+
+        const employeeSignaturePad = new SignaturePad(document.getElementById('employee_signature-pad'));
+        document.getElementById('clear-employee-signature').addEventListener('click', () => employeeSignaturePad.clear());
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    // Retrieve the JSON content safely
+    const employeeRecordsElement = document.getElementById('employee-records-data');
+    const employeeRecords = JSON.parse(employeeRecordsElement.textContent.trim());
+
+    const employeeSelect = document.getElementById('employee');
+    const viewRecordsButton = document.getElementById('viewRecordsButton');
+
+    employeeSelect.addEventListener('change', function () {
+        const selectedEmployeeId = this.value;
+
+        // Show/hide the "View Records" button based on whether data exists
+        if (employeeRecords[selectedEmployeeId]) {
+            // Generate the URL with employee_id appended to the end of the path
+            const viewUrl = "{% url 'list_disciplinary_record' id='0' %}".replace('0', selectedEmployeeId);
+            viewRecordsButton.setAttribute('href', viewUrl);
+            viewRecordsButton.style.display = 'inline-block';
+        } else {
+            viewRecordsButton.style.display = 'none';
+        }
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Update Actions{% endblock %}
+{% block title %}Update Control Point{% endblock %}
 
 {% block content %}
 {% if messages %}
@@ -20,33 +20,45 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header card-header-primary">
-                <h4 class="card-title">Update Actions</h4>
+                <h4 class="card-title">Update Control Point for {{correctiveAction.control_point.name}}</h4>
             </div>
             <div class="card-body">
-                 <form action="/action/update/{{action.id}}" method="POST">
+                <form action="/location/corrective_actions/update/{{correctiveAction.id}}" method="POST">
                     {% csrf_token %}
                     <!--Employee Name-->
-                    <div class="mb-3">
-                        <label>Action name</label>
-                        {{ form.name}}
-                        {% if form.errors.name %}
-                        <div class="alert alert-danger">
-                            <strong> {{form.errors.name.as_text|cut:"* " }}</strong>
+                          <!-- Control Point Form -->
+                          <div class="form-group">
+                            <label for="id_location">Control Point Name</label>
+                            {{ form.control_point }}
+                            {% if form.errors.control_point %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.control_point.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        <label>Status</label>
-                        {{ form.status}}
-                        {% if form.errors.status %}
-                        <div class="alert alert-danger">
-                            <strong> {{form.errors.status.as_text|cut:"* " }}</strong>
+    
+                        <div class="form-group">
+                            <label for="id_name">Action Name</label>
+                            {{ form.name }}
+                            {% if form.errors.name %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.name.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                    </div>
+    
+                        <div class="form-group">
+                            <label for="id_status">Control Point Status</label>
+                            {{ form.status }}
+                            {% if form.errors.status %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.status.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
+                        </div>
                     <div class="text-center">
-                        <button class="btn btn-success" type="submit">
-                            Update Action
+                        <button class="btn btn-success">
+                            Update
                         </button>
                     </div>
                 </form>

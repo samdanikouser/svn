@@ -1,8 +1,6 @@
 from datetime import datetime
 from django.db import models
-
-from apps.authentication.models import UserProfile
-from apps.correctiveaction.models import CorrectiveAction
+from django.contrib.auth.models import User
 from apps.haccp.models import HaccpAdminData
 
 class DailyUpdates(models.Model):
@@ -17,8 +15,8 @@ class DailyUpdates(models.Model):
     manager_approved_by = models.CharField(max_length=200, null=True, blank=True)
     manager_approved_status = models.CharField(max_length=200, null=True, blank=True)
     supervisor_comments = models.TextField(null=True,blank=True)
-    created_by = models.ForeignKey(UserProfile, related_name='created_daily_updates', on_delete=models.SET_NULL, null=True)
-    modified_by = models.ForeignKey(UserProfile, related_name='modified_daily_updates', on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(User, related_name='created_daily_updates', on_delete=models.SET_NULL, null=True)
+    modified_by = models.ForeignKey(User, related_name='modified_daily_updates', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(default=datetime.now,null=True,blank=True)
     modified_at = models.DateTimeField(auto_now=True,null=True,blank=True)
 

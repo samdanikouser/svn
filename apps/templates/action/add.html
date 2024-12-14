@@ -1,53 +1,67 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Add Actions{% endblock %}
+{% block title %}Add Control Point and Corrective Action{% endblock %}
 
 {% block content %}
+<!-- Display Messages -->
 {% if messages %}
     <div class="messages">
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+            <div class="alert alert-{{ message.tags }}" role="alert">
                 {{ message }}
             </div>
         {% endfor %}
     </div>
 {% endif %}
 
-<div style="display: flex; justify-content: space-between; padding: 20px;">
-    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+<!-- Navigation -->
+<div class="d-flex justify-content-between mb-3">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm">Back</a>
+    <a href="{% url 'locationlist' %}" style="text-decoration: none; font-size: 16px;" class="btn btn-primary btn-sm">View Locations</a>
 </div>
+
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header card-header-primary">
-                <h4 class="card-title">Add Actions</h4>
+                <h4 class="card-title mb-0">Add Corrective Action for {{ control_point.name }}- {{ control_point.location }}</h4>
             </div>
             <div class="card-body">
-                <form action="/action/add" method="POST">
+                <form method="POST">
                     {% csrf_token %}
-                    <!--Employee Name-->
-                    <div class="mb-3">
-                        <label style="font-family:Monospace"> Action Name</label>
-                        {{ form.name}}
-                        {% if form.errors.name %}
-                        <div class="alert alert-danger">
-                            <strong> {{form.errors.name.as_text|cut:"* " }}</strong>
-                        </div>
-                        {% endif %}
+
+                    <!-- Control Point Form -->
+                    <div class="form-group">
+                        <label for="id_location">Location : </label>
+                        {{control_point.location.name}}
                     </div>
-                    <div class="mb-3">
-                        <label style="font-family:Monospace"> Action status</label>
-                        {{ form.status}}
-                        {% if form.errors.status %}
-                        <div class="alert alert-danger">
-                            <strong> {{form.errors.status.as_text|cut:"* " }}</strong>
-                        </div>
-                        {% endif %}
+
+                    <div class="form-group">
+                        <label for="id_name">Control Point Name : </label>
+                        {{ control_point.name }}
                     </div>
-                    <div class="text-center">
-                        <button class="btn btn-success">
-                            Add Action
-                        </button>
+
+                    <div id="corrective-actions-container">
+                        <div class="corrective-action-form mb-4 p-3 border rounded shadow-sm bg-light">
+                            <div class="form-group">
+                                <label for="id_name">Corrective Action Name</label>
+                                <input type="text" name="corrective_actions[][name]" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_status">Action Status</label>
+                                <select name="corrective_actions[][status]" class="form-control" required>
+                                    <option value="True">Active</option>
+                                    <option value="False">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Button to Add More Corrective Actions -->
+                    <button type="button" class="btn btn-secondary" id="add-corrective-action">+ Add Corrective Action</button>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-success">Add Control Point and Action</button>
                     </div>
                 </form>
             </div>
@@ -55,5 +69,29 @@
     </div>
 </div>
 
-{% endblock %}
+<!-- Hidden Template for New Corrective Action Form -->
+<script type="text/template" id="corrective-action-template">
+    <div class="corrective-action-form mb-4 p-3 border rounded shadow-sm bg-light">
+        <div class="form-group">
+            <label for="id_name">Corrective Action Name</label>
+            <input type="text" name="corrective_actions[][name]" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="id_status">Action Status</label>
+            <select name="corrective_actions[][status]" class="form-control" required>
+                <option value="True">Active</option>
+                <option value="False">Inactive</option>
+            </select>
+        </div>
+    </div>
+</script>
 
+<script>
+    document.getElementById('add-corrective-action').addEventListener('click', function() {
+        var template = document.getElementById('corrective-action-template').innerHTML;
+        var container = document.getElementById('corrective-actions-container');
+        container.insertAdjacentHTML('beforeend', template);
+    });
+</script>
+
+{% endblock %}

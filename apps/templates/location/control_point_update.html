@@ -1,0 +1,87 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Update Control Point{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="/location/corrective_actions/add/{{controlPoint.id}}"
+                    class="btn btn-primary btn-sm">Add Corrective actions</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Update Control Point for {{controlPoint.name}}</h4>
+            </div>
+            <div class="card-body">
+                <form action="/location/control_point/update/{{controlPoint.id}}" method="POST">
+                    {% csrf_token %}
+                    <!--Employee Name-->
+                          <!-- Control Point Form -->
+                          <div class="form-group">
+                            <label for="id_location">Location</label>
+                            {{ form.location }}
+                            {% if form.errors.location %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.location.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="id_name">Control Point Name</label>
+                            {{ form.name }}
+                            {% if form.errors.name %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.name.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="id_daily_activity">Daily Activity</label>
+                            {{ form.daily_activity }}
+                            {% if form.errors.daily_activity %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.daily_activity.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="id_status">Control Point Status</label>
+                            {{ form.status }}
+                            {% if form.errors.status %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.errors.status.as_text|cut:"* " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    <div class="text-center">
+                        <button class="btn btn-success">
+                            Update Control Point
+                        </button>
+                    </div>
+                    <div class="text-center">
+                    <a href="/location/corrective_actions/list/{{controlPoint.id}}"
+                    class="btn btn-warning btn-sm">Update Corrective actions</a>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,4 +1,4 @@
-from .models import Location
+from .models import ControlPoint, Location
 from django.forms import ModelForm
 from django import forms
 
@@ -7,7 +7,11 @@ from django import forms
 class LocationForm(ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control", 'name': "name"}),
                            error_messages={'required': "Please Enter Location Name"})
-    status = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={'class': "form-control", 'status': "status"}))
+    status = forms.ChoiceField(
+            choices=[(True, 'Active'), (False, 'Inactive')],
+            required=True,
+            widget=forms.Select(attrs={'class': "form-control", 'name': 'status'})
+        )
 
     class Meta:
         # write the name of models for which the form is made
@@ -28,3 +32,35 @@ class LocationForm(ModelForm):
                 'Minimum 5 characters required'])
         # return any errors if found
         return self.cleaned_data
+    
+
+class ControlPointForm(forms.ModelForm):
+    location = forms.ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.Select(attrs={'readonly': 'readonly', 'class': 'form-control'}),  # Use readonly
+        required=False
+    )
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control", 'name': "name"}),
+                           error_messages={'required': "Please Enter Control point Name"})
+    daily_activity = forms.ChoiceField(
+            choices=[(True, 'Active'), (False, 'Inactive')],
+            required=True,
+            widget=forms.Select(attrs={'class': "form-control", 'name': 'status'})
+        )
+    status = forms.ChoiceField(
+            choices=[(True, 'Active'), (False, 'Inactive')],
+            required=True,
+            widget=forms.Select(attrs={'class': "form-control", 'name': 'status'})
+        )
+
+    class Meta:
+        model = ControlPoint
+        fields = ['location', 'name', 'daily_activity', 'status']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set the location field as read-only
+        if 'location' in self.fields:
+            self.fields['location'].widget.attrs['readonly'] = True
+            # Optionally disable the location field to prevent user editing
+            self.fields['location'].disabled = True

@@ -20,6 +20,8 @@ class UserProfile(models.Model):
     status = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, related_name='created_userprofile_updates', on_delete=models.SET_NULL, null=True)
+    modified_by = models.ForeignKey(User, related_name='modified_userprofile_updates', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         """string representation of the object"""

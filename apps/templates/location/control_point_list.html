@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title%}Control Point List{% endblock title %}
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="/location/{{ location.name }}/control_point/add" class="btn btn-primary btn-sm">
+        Add {{ location.name }} Control Point
+    </a>
+</div>
+ <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title ">Control Point of {{location.name}}</h4>
+                    <p class="card-category"></p>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class=" text-primary">
+                            <tr>
+                                <th scope="col">S.NO.</th>
+                                <th scope="col">NAME</th>
+                                <th scope="col">STATUS</th>
+                                <th scope="col">ACTION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for control_point in control_points %}
+                            <tr>
+                                <td style="color:black">{{forloop.counter}}</td>
+                                <td style="color:black">{{control_point.name}}</td>
+                                <td>
+                                    <input type="checkbox" disabled id="toggle{{ control_point.id }}" {% if control_point.status %}checked{% endif %}>
+                                    <label for="toggle{{ control_point.id }}">
+                                        {% if control_point.status %}
+                                            Enabled
+                                        {% else %}
+                                            Disabled
+                                        {% endif %}
+                                    </label>
+                                </td>                                <td>
+                                    <a href="/location/control_point/delete/{{control_point.id}}"
+                                       class="btn btn-danger btn-sm">Delete</a>
+                                    <a href="/location/control_point/update/{{control_point.id}}"
+                                       class="btn btn-success btn-sm">Update</a>
+                                    <a href="/location/corrective_actions/list/{{control_point.id}}"
+                                       class="btn btn-warning btn-sm">Update Corrective actions</a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}

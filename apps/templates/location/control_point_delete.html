@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Delete Control Point{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Delete Control Point {{controlPoint.name}}</h4>
+            </div>
+            <div class="card-body">
+                <form action="/location/control_point/delete/{{controlPoint.id}}" method="post">
+                    {% csrf_token %}
+                    <p>Are you sure you want to delete this Control Point,this may schedule delete related datas?<b>{{ controlPoint.name }}</b></p>
+
+                    <input type="submit" class="btn btn-danger">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 from apps.authentication.models import UserProfile
 
 class PersonalHygiene(models.Model):
@@ -14,6 +14,8 @@ class PersonalHygiene(models.Model):
     photos = models.ManyToManyField('UploadedPhoto', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, related_name='created_personal_hygiene_updates', on_delete=models.SET_NULL, null=True)
+    modified_by = models.ForeignKey(User, related_name='modified_personal_hygiene_updates', on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return f"Inspection by {self.inspected_by} on {self.inspected_date}"
 
@@ -21,6 +23,10 @@ class PersonalHygiene(models.Model):
 class UploadedPhoto(models.Model):
     photo = models.ImageField(upload_to='media/personal_hygiene_photos/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name='created_photo_updates', on_delete=models.SET_NULL, null=True)
+    modified_by = models.ForeignKey(User, related_name='modified_photo_updates', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"Photo {self.id} uploaded on {self.uploaded_at}"
+
+

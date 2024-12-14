@@ -14,7 +14,10 @@
 {% endif %}
 
 <div style="display: flex; justify-content: space-between; padding: 20px;">
-    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm">Back</a>
+    <a href="/location/{{ location.name }}/control_point/add" class="btn btn-primary btn-sm">
+        Add {{ location.name }} Control Point
+    </a>
 </div>
 <div class="row">
     <div class="col-md-8">
@@ -45,9 +48,14 @@
                         {% endif %}
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-success">
-                            Update Location
+                        <button class="btn btn-success btn-sm">
+                            Update
                         </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="/location/control-point/list/{{ location.id }}" class="btn btn-warning btn-sm">
+                            Update Control Point
+                        </a>
                     </div>
                 </form>
             </div>
