@@ -1,92 +1,90 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-
 {% block title %}{{name}}{% endblock %}
 {% block stylesheets %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock stylesheets %}
 
-
 {% block content %}
+<!-- Message Section -->
 {% if messages %}
-    <div class="messages">
+    <div class="messages" style="margin-bottom: 20px;">
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}" style="border-radius: 10px; padding: 20px; font-size: 16px;">
                 {{ message }}
             </div>
         {% endfor %}
     </div>
 {% endif %}
 
+<!-- Back Button Section -->
 <div style="display: flex; justify-content: space-between; padding: 20px;">
-    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+    <a href="javascript:history.back()" class="btn btn-outline-primary btn-lg" style="text-decoration: none; font-size: 18px; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">Back</a>
 </div>
+
+<!-- Main Content Section -->
 <div class="row">
-        <div class="card">
+    <div class="col-lg-12">
+        <div class="card shadow-lg rounded" style="border-radius: 12px; background-color: #ffffff;">
             <div class="card-header card-header-primary">
-                <h4 class="card-title">
-                    {{name}} -{{status}}
-                </h4>
+                <h4 class="card-title" style="font-weight: 600; font-size: 24px; letter-spacing: 0.5px;">{{name}} - {{status}}</h4>
             </div>
-            <div class="card-body">
-                <h6 class="card-category">
-                    <b>Add task Details</b>
+            <div class="card-body" style="padding: 30px;">
+                <h6 class="card-category" style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">
+                    <b>Add Task Details</b>
                 </h6>
-                <br/>
                 <form action="{% url 'storage_data_admin_data' name status %}" method="POST">
                     {% csrf_token %}
+                    <!-- Task Name Input -->
                     <div class="form-group">
-                        <input type="text" class="form-control" id="taskName" name="taskName" placeholder="Enter Task Name">
+                        <input type="text" class="form-control" id="taskName" name="taskName" placeholder="Enter Task Name" style="border-radius: 8px; padding: 12px 18px; font-size: 16px;">
                     </div>
-                    <div class="space-related-in border-radius-lg shadow">
-                        <h5 class="mt-5"
-                            style="font-family:Monospace;text-align: center;padding-top:20px; color: #007bff;">Used
-                            For</h5>
+
+                    <!-- Used For Section -->
+                    <div class="space-related-in border-radius-lg shadow" style="padding: 20px; margin-bottom: 20px;">
+                        <h5 class="mt-5" style="font-family: Monospace; text-align: center; color: #007bff;">Used For</h5>
                         <div class="row" style="padding: 10px;">
                             <div class="col">
                                 <div class="form-group">
-                                    <input type="text" id="used_for" name="used_for" placeholder="Enter Common name"
-                                           class="form-control">
+                                    <input type="text" id="used_for" name="used_for" placeholder="Enter Common name" class="form-control" style="border-radius: 8px; padding: 12px 18px;">
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="numberofusedfor">Number of used for: </label>
-                                    <input type="number" id="numberofusedfor" name="no_of_used_for" class="form-control"
-                                           oninput="generateOnField()">
+                                    <label for="numberofusedfor" style="font-weight: 600;">Number of Used For:</label>
+                                    <input type="number" id="numberofusedfor" name="no_of_used_for" class="form-control" oninput="generateOnField()" style="border-radius: 8px; padding: 12px 18px;">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="space-related-in border-radius-lg shadow">
-                        <h5 class="mt-5"
-                            style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">Task
-                            Details</h5>
+
+                    <!-- Task Details Section -->
+                    <div class="space-related-in border-radius-lg shadow" style="padding: 20px; margin-bottom: 20px;">
+                        <h5 class="mt-5" style="font-family: Monospace; text-align: center; color: #007bff;">Task Details</h5>
                         <div class="row" style="padding: 10px;">
                             <div class="col">
-                                <div class="col">
-                                    <label>Assign Task To</label>
-                                    <select name="assign_task_to" class="form-control">
+                                <div class="form-group">
+                                    <label for="assign_task_to" style="font-weight: 600;">Assign Task To:</label>
+                                    <select name="assign_task_to" class="form-control" id="assign_task_to" style="border-radius: 8px; padding: 12px 18px;">
                                         <option value="line_staff">Line Staff</option>
                                         <option value="supervisors">Supervisors</option>
                                         <option value="managers">Managers</option>
                                         <option value="admin">Admin</option>
-                                        <!-- Add more options as needed -->
-                                    </select></div>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="custom_fields">
+                            <div class="col custom_fields">
                                 <div class="row" style="padding: 10px;">
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="numberInput">Repeat every:</label>
-                                            <input type="number" id="numberInput" name="period" class="form-control"
-                                                   oninput="generateOnField()">
+                                            <label for="numberInput" style="font-weight: 600;">Repeat Every:</label>
+                                            <input type="number" id="numberInput" name="period" class="form-control" oninput="generateOnField()" style="border-radius: 8px; padding: 12px 18px;">
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <label>Repeat Frequency</label>
-                                        <select name="repeat_frequency" class="form-control" id="repeat_frequency">
+                                        <label for="repeat_frequency" style="font-weight: 600;">Repeat Frequency:</label>
+                                        <select name="repeat_frequency" class="form-control" id="repeat_frequency" style="border-radius: 8px; padding: 12px 18px;">
                                             <option value="times_a_day">Times a day</option>
                                             <option value="days">Days</option>
                                             <option value="weeks">Weeks</option>
@@ -96,105 +94,82 @@
                                     </div>
                                 </div>
                                 <div style="padding: 10px;">
-                                    <div id="fieldsContainer" class="col">
-                                    </div>
+                                    <div id="fieldsContainer" class="col"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="space-related-in border-radius-lg shadow">
-                            <h5 class="mt-5"
-                                style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">Set
-                                Temperature</h5>
-                            <div class="row" style="padding: 10px;">
-                                <div class="col">
-                                    <input type="text" class="form-control" name="max_value"
-                                           placeholder="Min Temperature">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" name="min_value"
-                                           placeholder="Max temperature">
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="space-related-in border-radius-lg shadow">
-                            <h5 class="mt-5"
-                                style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">
-                                Corrective
-                                actions</h5>
-                            <div style="padding: 10px;">
-                                <div class="alert alert-success" style="margin: 30px;">
-                                    <span class="alert-icon">ℹ️</span>
-                                    <span>The following corrective actions will be shown when a non-compliant value is logged.</span>
-                                </div>
-                                {% for action in corrective_action %}
-                                <label>
-                                    <input type="checkbox" id="corrective_action" name="corrective_action"
-                                           value="{{ action.id }}">
-                                    {{ action.name }}
-                                </label><br>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="space-related-in border-radius-lg shadow">
-                            <h5 class="mt-5"
-                                style="font-family:Monospace;text-align: center;padding-top:20px;color: #007bff;">Select
-                                First Level Approver</h5>
-                            <div style="padding: 10px;">
-                                <select name="select_verifier" class="form-control">
-                                    <option value="line_staff">Line Staff</option>
-                                    <option value="supervisors">Supervisors</option>
-                                    <option value="managers">Managers</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-lg btn-block"
-                                style="padding: 10px;margin-top: 20px;">Confirm
-                        </button>
                     </div>
-                    <script>
-                        function generateOnField() {
-                            // Get the number from the input box
-                            let numberOfFields = document.getElementById('numberInput').value;
 
-                            // Get the container where the fields will be added
-                            let container = document.getElementById('fieldsContainer');
+                    <!-- Temperature Section -->
+                    <div class="space-related-in border-radius-lg shadow" style="padding: 20px; margin-bottom: 20px;">
+                        <h5 class="mt-5" style="font-family: Monospace; text-align: center; color: #007bff;">Set Temperature</h5>
+                        <div class="row" style="padding: 10px;">
+                            <div class="col">
+                                <input type="text" class="form-control" name="max_value" placeholder="Max Temperature" style="border-radius: 8px; padding: 12px 18px;">
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" name="min_value" placeholder="Min Temperature" style="border-radius: 8px; padding: 12px 18px;">
+                            </div>
+                        </div>
+                    </div>
 
-                            // Clear any existing fields
-                            container.innerHTML = '';
+                    <!-- Corrective Actions Section -->
+                    <div class="space-related-in border-radius-lg shadow" style="padding: 20px; margin-bottom: 20px;">
+                        <h5 class="mt-5" style="font-family: Monospace; text-align: center; color: #007bff;">Corrective Actions</h5>
+                        <div class="alert alert-success" style="margin: 30px; padding: 20px; font-size: 16px; border-radius: 8px;">
+                            <span class="alert-icon" style="font-size: 20px;">ℹ️</span>
+                            <span>The following corrective actions will be shown when a non-compliant value is logged.</span>
+                        </div>
+                        {% for action in corrective_action %}
+                            <label style="font-weight: 600;">
+                                <input type="checkbox" id="corrective_action" name="corrective_action" value="{{ action.id }}">
+                                {{ action.name }}
+                            </label><br>
+                        {% endfor %}
+                    </div>
 
-                            // Add the specified number of fields
-                            for (let i = 0; i < numberOfFields; i++) {
-                                // Create a new div for each label and input pair
-                                let fieldWrapper = document.createElement('div');
-                                fieldWrapper.className = 'form-group';
+                    <!-- Approver Section -->
+                    <div class="space-related-in border-radius-lg shadow" style="padding: 20px; margin-bottom: 20px;">
+                        <h5 class="mt-5" style="font-family: Monospace; text-align: center; color: #007bff;">Select First Level Approver</h5>
+                        <div style="padding: 10px;">
+                            <select name="select_verifier" class="form-control" style="border-radius: 8px; padding: 12px 18px;">
+                                <option value="line_staff">Line Staff</option>
+                                <option value="supervisors">Supervisors</option>
+                                <option value="managers">Managers</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
 
-                                // Create a new label
-                                let label = document.createElement('label');
-                                label.innerText = `ON`;
-                                fieldWrapper.appendChild(label);
-
-                                // Create a new input
-                                let input = document.createElement('input');
-                                input.type = 'time';
-                                input.className = 'form-control';
-                                input.name = `time_on`;
-                                input.placeholder = `Enter time ${i + 1}`;
-                                fieldWrapper.appendChild(input);
-
-                                // Append the new field wrapper to the container
-                                container.appendChild(fieldWrapper);
-                            }
-                        }
-                    </script>
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" style="padding: 12px 20px; margin-top: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">Confirm</button>
                 </form>
-                <script src="{% static 'js/scripts.js' %}"></script>
-
             </div>
         </div>
+    </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function generateOnField() {
+        let num = document.getElementById("numberofusedfor").value;
+        let fieldsContainer = document.getElementById("fieldsContainer");
+        fieldsContainer.innerHTML = '';
+        for (let i = 0; i < num; i++) {
+            let fieldDiv = document.createElement("div");
+            fieldDiv.classList.add("form-group");
+            let label = document.createElement("label");
+            label.textContent = `Used for ${i+1}:`;
+            let inputField = document.createElement("input");
+            inputField.type = "text";
+            inputField.name = `used_for_${i+1}`;
+            inputField.classList.add("form-control");
+            fieldDiv.appendChild(label);
+            fieldDiv.appendChild(inputField);
+            fieldsContainer.appendChild(fieldDiv);
+        }
+    }
+</script>
 {% endblock %}
