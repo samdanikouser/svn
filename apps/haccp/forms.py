@@ -1,5 +1,7 @@
 from django import forms
 
+from apps.haccp.models import CoolingData
+
 
 class AddStorageDataAdminForm(forms.Form):
     name = forms.TextInput(attrs={
@@ -68,4 +70,41 @@ class AddStorageDataAdminForm(forms.Form):
         'style': 'max-width: auto;'
     }),
 
+
+class CoolingDataForm(forms.ModelForm):
+    class Meta:
+        model = CoolingData
+        fields = [
+            'storage_location', 
+            'sub_storage_location', 
+            'food_item', 
+            'internal_temp_at_0_hrs', 
+            'internal_temp_at_1_hrs', 
+            'internal_temp_at_2_hrs', 
+            'internal_temp_at_3_hrs', 
+            'internal_temp_at_4_hrs', 
+            'internal_temp_at_5_hrs', 
+            'internal_temp_at_6_hrs', 
+            'cooling_methods', 
+            'corrective_actions', 
+            'text_message'
+        ]
+    
+    # Setting Storage Location and Sub Storage Location as read-only
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['storage_location'].widget.attrs['readonly'] = True
+        self.fields['sub_storage_location'].widget.attrs['readonly'] = True
+
+    # Setting choices for Cooling Methods
+    COOLING_METHODS_CHOICES = [
+        ('blast_chiller', 'Blast Chiller'),
+        ('ice_water_bath', 'Ice Water Bath'),
+    ]
+
+    cooling_methods = forms.ChoiceField(
+        choices=COOLING_METHODS_CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False  # Optional field
+    )
 

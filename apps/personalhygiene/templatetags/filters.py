@@ -12,3 +12,11 @@ def replace_yes_no(value):
         value = re.sub(r'\bYes\b', '<b>Yes</b><br>', value)
         value = re.sub(r'\bNo\b', '<b>No</b><br>', value)
     return value
+
+
+@register.filter
+def replace_list_bracket(value):
+    if value:
+        value = re.sub(r"\['", "", value)
+        value = re.sub(r"'\]", "\n", value)
+    return value

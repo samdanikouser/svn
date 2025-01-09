@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<section class="intro">
+    <div class="h-100">
+        <div>
+            <a href="{% url 'cooling_data_entry' location %}" class="btn btn-primary btn-sm" style="font-family:Monospace">Add Cooling data</a>
+            <div class=" text-center ">
+                <h1 style="font-family:Monospace">COOLING LIST</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-10">
+                    <div class="table-responsive bg-white">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">S.NO.</th>
+                                <th scope="col">Item Name</th>
+                                <th scope="col">Cooling Method</th>
+                                <th scope="col">Entered by</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for cooling_data in coolings_data %}
+                            <tr>
+                                <td style="color:black">{{forloop.counter}}</td>
+                                <td style="color:black">{{cooling_data.food_item}}</td>
+                                <td style="color:black">{{cooling_data.cooling_methods}}</td>
+                                <td style="color:black">{{cooling_data.data_entered_by}}</td>
+                                <td>
+                                    <a href="{% url 'cooling_data_view' cooling_data.id %}"
+                                       class="btn btn-danger btn-sm">View</a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

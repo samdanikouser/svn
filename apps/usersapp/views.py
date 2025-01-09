@@ -3,8 +3,9 @@ from django.shortcuts import redirect, render
 from apps.authentication.decorators import role_required
 from apps.authentication.models import UserProfile
 from apps.correctiveaction.models import CorrectiveAction
-from apps.haccp.models import HaccpAdminData
-from apps.location.models import Location
+from apps.haccp.forms import CoolingDataForm
+from apps.haccp.models import CoolingData, HaccpAdminData
+from apps.location.models import ControlPoint, Location
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -42,10 +43,11 @@ def approve_tasks(request):
 
 
 @login_required
-def daily_activity(request):
-    location = Location.objects.get(id=request.GET.get('location')).name
-    daily_activity = HaccpAdminData.objects.filter(storage_location = Location.objects.get(id=request.GET.get('location')))
-    return render(request, 'users/users_first_page.html',{"location":location,"daily_activity":daily_activity})
+def daily_activity(request,location=None):
+    location = Location.objects.get(name=location)
+    name = location.name
+    daily_activity = HaccpAdminData.objects.filter(storage_location =location)
+    return render(request, 'users/users_first_page.html',{"location":name,"daily_activity":daily_activity})
 
 
 @csrf_exempt
@@ -90,3 +92,65 @@ def check_daily_update(request):
     user_data = DailyUpdates.objects.filter().values_list('haccp_link_time_given','haccp_link__used_for')
     data_to_send = [{'id':data[1]+str(data[0])[0:5]} for data in user_data]
     return JsonResponse({'data_exists': data_to_send})
+
+
+def cooling_data_entry(request,location=None):
+    corrective_actions=CorrectiveAction.objects.filter(control_point__name__istartswith='cool',control_point__location__name = location).values_list('name',flat=True)
+    control_point = ControlPoint.objects.filter(location__name = location,name__istartswith='cool')
+    if control_point:
+        control_point = control_point[0]
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        location = Location.objects.get(name = data.get('storage_location'))
+        sub_location = ControlPoint.objects.get(name =data.get('sub_storage_location'),location = location)
+        cooling_data = CoolingData()
+        cooling_data.storage_location = location
+        cooling_data.sub_storage_location = sub_location
+        cooling_data.food_item = data.get('food_item')
+        cooling_data.internal_temp_at_0_hrs = data.get('temp_0')
+        cooling_data.internal_temp_at_1_hrs =  data.get('temp_1')
+        cooling_data.internal_temp_at_2_hrs = data.get('temp_2')
+        cooling_data.internal_temp_at_3_hrs = data.get('temp_3')
+        cooling_data.internal_temp_at_4_hrs = data.get('temp_4')
+        cooling_data.internal_temp_at_5_hrs = data.get('temp_5')
+        cooling_data.internal_temp_at_6_hrs = data.get('temp_6')
+        cooling_data.cooling_methods = data.get('cooling_methods')
+        cooling_data.data_entered_by = data.get('category')
+        cooling_data.corrective_actions = data.get('corrective_actions')
+        cooling_data.text_message = data.get('text_message')
+        cooling_data.data_entered_by = UserProfile.objects.get(user = request.user)
+        cooling_data.created_by = UserProfile.objects.get(user = request.user)
+        cooling_data.save()
+        return JsonResponse({"success": True})
+    return render(request, 'users/cooling_data_entry.html',{"location":location,'control_point':control_point,'corrective_actions':list(corrective_actions)})
+
+
+def cooling_data_list(request,location):
+    coolings_data = CoolingData.objects.filter(storage_location__name = location)
+    return render(request, 'users/cooling_data_list.html',{"location":location,'coolings_data':coolings_data})
+
+def cooling_data_view(request,id):
+    coolings_data = CoolingData.objects.filter(id = id)[0]
+    return render(request, 'users/cooling_data_view.html',{'coolings_data':coolings_data})
+
+
+def cooking_data_entry(request,location=None):
+    corrective_actions=CorrectiveAction.objects.filter(control_point__name__istartswith='cool',control_point__location__name = location).values_list('name',flat=True)
+    control_point = ControlPoint.objects.filter(location__name = location,name__istartswith='cool')
+    if control_point:
+        control_point = control_point[0]
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        location = Location.objects.get(name = data.get('storage_location'))
+        sub_location = ControlPoint.objects.get(name =data.get('sub_storage_location'),location = location)
+        cooling_data = CoolingData()
+    return render(request, 'users/cooking_data_entry.html',{"location":location,'control_point':control_point,'corrective_actions':list(corrective_actions)})
+
+def cooking_data_list(request,location):
+    pass
+
+def reheating_data_entry(request,location=None):
+    pass
+
+def reheating_data_list(request,location):
+    pass

@@ -80,6 +80,30 @@
             </li>
             {% endif %}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="{% if location %}{% url 'daily_activity' location %}{% else %}{% url 'daily_activity' %}{% endif %}">
+                    <i class="material-icons">calendar_today</i>
+                    <p>Daily Activity</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="{% if location %}{% url 'cooking_data_entry' location %}{% else %}{% url 'cooling_data_entry' %}{% endif %}">
+                <i class="material-icons">restaurant</i>
+                    <p>Cooking</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="{% if location %}{% url 'cooling_data_entry' location %}{% else %}{% url 'cooling_data_entry' %}{% endif %}">
+                    <i class="material-icons">ac_unit</i>
+                    <p>Cooling</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                <a class="nav-link" href="{% if location %}{% url 'reheating_data_entry' location %}{% else %}{% url 'cooling_data_entry' %}{% endif %}">
+                    <i class="material-icons">microwave</i>
+                    <p>Re-Heating</p>
+                </a>
+            </li>
+            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
                     <i class="material-icons">person</i>
                     <p>User Profile</p>

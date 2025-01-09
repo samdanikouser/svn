@@ -10,6 +10,10 @@ __pycache__/
 *.db
 *.sqlite3
 *.log
+db.sqlite3
+*.log
+*.pot
+local_settings.py
 
 # venv
 env
@@ -29,3 +33,26 @@ apps/static/assets/node_modules
 apps/static/assets/yarn.lock
 apps/static/assets/.temp
 
+
+# Media files
+media/
+
+# Secrets
+.env
+*.key
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Node.js dependencies
+node_modules/
+
+# Ignore specific migration files (if needed)
+*/migrations/*.py[cod]
+!*/migrations/__init__.py

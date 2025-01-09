@@ -26,7 +26,7 @@ def login_view(request):
     if request.method == "POST":
         location = ""
         if 'location' in request.POST:
-            location = request.POST['location']
+            location =Location.objects.get(id=int(request.POST['location'])).name
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
@@ -38,7 +38,7 @@ def login_view(request):
                     return redirect('home')
                 elif location or (userPofile_role in ['admin', 'managers','supervisor'] and location):
                     url = reverse('daily_activity')
-                    return redirect(f'{url}?location={location}')
+                    return redirect(f'{url}{location}')
                 else:
                     error_message = 'Your line user ,Please Select location'
             else:
