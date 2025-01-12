@@ -4,7 +4,7 @@ from apps.authentication.decorators import role_required
 from apps.authentication.models import UserProfile
 from apps.correctiveaction.models import CorrectiveAction
 from apps.haccp.forms import CoolingDataForm
-from apps.haccp.models import CoolingData, HaccpAdminData
+from apps.haccp.models import CookingData, CoolingData, HaccpAdminData
 from apps.location.models import ControlPoint, Location
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -118,6 +118,7 @@ def cooling_data_entry(request,location=None):
         cooling_data.data_entered_by = data.get('category')
         cooling_data.corrective_actions = data.get('corrective_actions')
         cooling_data.text_message = data.get('text_message')
+        cooling_data.action_comment = data.get('action_comment')
         cooling_data.data_entered_by = UserProfile.objects.get(user = request.user)
         cooling_data.created_by = UserProfile.objects.get(user = request.user)
         cooling_data.save()
@@ -143,11 +144,31 @@ def cooking_data_entry(request,location=None):
         data = json.loads(request.body)
         location = Location.objects.get(name = data.get('storage_location'))
         sub_location = ControlPoint.objects.get(name =data.get('sub_storage_location'),location = location)
-        cooling_data = CoolingData()
+        cooking_data = CookingData()
+        cooking_data.storage_location = location
+        cooking_data.sub_storage_location = sub_location
+        cooking_data.meal_period = data.get('meal_period')
+        cooking_data.item_name = data.get('food_item')
+        cooking_data.time = data.get('time')
+        cooking_data.temperature = data.get('temperature')
+        cooking_data.food_type = data.get('food_type')
+        cooking_data.corrective_actions = data.get('corrective_actions')
+        cooking_data.text_message = data.get('text_message')
+        cooking_data.action_comment = data.get('action_comment')
+        cooking_data.data_entered_by = UserProfile.objects.get(user = request.user)
+        cooking_data.save()
+        return JsonResponse({"success": True})
     return render(request, 'users/cooking_data_entry.html',{"location":location,'control_point':control_point,'corrective_actions':list(corrective_actions)})
 
 def cooking_data_list(request,location):
-    pass
+    cookings_data = CookingData.objects.filter(storage_location__name = location)
+    return render(request, 'users/cooking_data_list.html',{"location":location,'cookings_data':cookings_data})
+
+
+def cooking_data_view(request,id):
+    cookings_data = CookingData.objects.filter(id = id)[0]
+    return render(request, 'users/cooking_data_view.html',{'cookings_data':cookings_data})
+
 
 def reheating_data_entry(request,location=None):
     pass

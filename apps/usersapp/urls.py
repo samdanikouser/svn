@@ -17,6 +17,7 @@ urlpatterns = [
     path('/Cooking/add/<str:location>/', views.cooking_data_entry, name='cooking_data_entry'),
     path('/Cooking/add/', views.cooking_data_entry, name='cooking_data_entry'),
     path('/Cooking/list/<str:location>/', views.cooking_data_list, name='cooking_data_list'),
+    path('/Cooking/view/<int:id>', views.cooking_data_view, name='cooking_data_view'),
     path('/Re-Heating/add/<str:location>/', views.reheating_data_entry, name='reheating_data_entry'),
     path('/Re-Heating/add/', views.reheating_data_entry, name='reheating_data_entry'),
     path('/Re-Heating/list/<str:location>', views.reheating_data_entry, name='reheating_data_entry'),

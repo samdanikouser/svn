@@ -59,6 +59,7 @@ class CoolingData(models.Model):
     cooling_methods = models.CharField(max_length=255, null=True, blank=True)
     data_entered_by = models.ForeignKey(UserProfile, related_name='entered_cooling_data', on_delete=models.SET_NULL, null=True)
     corrective_actions = models.TextField(null=True,blank=True)
+    action_comment = models.TextField(null=True,blank=True)
     text_message = models.TextField(null=True,blank=True)
     supervisor_approved_by = models.CharField(max_length=200, null=True, blank=True)
     supervisor_approved_status = models.CharField(max_length=200, null=True, blank=True)
@@ -88,7 +89,9 @@ class CookingData(models.Model):
     supervisor_approved_by = models.CharField(max_length=200,null=True,blank=True)
     supervisor_approved_status = models.CharField(max_length=200,null=True,blank=True)
     corrective_actions = models.TextField(null=True,blank=True)
+    action_comment = models.TextField(null=True,blank=True)
     text_message = models.TextField(null=True,blank=True)
+    data_entered_by = models.ForeignKey(UserProfile, related_name='entered_cooking_data', on_delete=models.SET_NULL, null=True)
     manager_approved_by = models.CharField(
         max_length=200, 
         null=True, 

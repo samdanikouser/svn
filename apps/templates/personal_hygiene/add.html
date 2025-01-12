@@ -156,6 +156,7 @@
 
 {% block title %}Personal Hygiene Inspection{% endblock %}
 
+
 {% block content %}
 <div class="form-container">
     {% if messages %}
@@ -166,7 +167,16 @@
         </div>
     {% endif %}
 
+
     <h2 class="form-header">Personal Hygiene Inspection</h2>
+    <div class="d-flex justify-content-between mb-4">
+        <a href="javascript:history.back()" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <a href="{% url 'personalhygiene_list' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-left"></i> List
+        </a>
+    </div>
 
     <form method="post" enctype="multipart/form-data" id="personalHygieneForm">
         {% csrf_token %}
