@@ -161,13 +161,14 @@ class ReHeatingData(models.Model):
         decimal_places=2, 
         null=True, 
         blank=True,
-        help_text="Temperature must be at least 75°C"
     )
     time_taken_for_reheating = models.DurationField(
         null=True, 
         blank=True,
-        help_text="Time must be less than 2 hours"
     )
+    action_comment = models.TextField(null=True,blank=True)
+    corrective_actions = models.TextField(null=True,blank=True)
+    data_entered_by = models.ForeignKey(UserProfile, related_name='entered_reheating_data', on_delete=models.SET_NULL, null=True)
     supervisor_approved_by = models.CharField(
         max_length=200, 
         null=True, 

@@ -4,7 +4,7 @@ from apps.authentication.decorators import role_required
 from apps.authentication.models import UserProfile
 from apps.correctiveaction.models import CorrectiveAction
 from apps.haccp.forms import CoolingDataForm
-from apps.haccp.models import CookingData, CoolingData, HaccpAdminData
+from apps.haccp.models import CookingData, CoolingData, HaccpAdminData, ReHeatingData
 from apps.location.models import ControlPoint, Location
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +12,8 @@ from django.contrib.auth.decorators import login_required
 import json
 from apps.usersapp.models import DailyUpdates
 from django.contrib import messages
+from datetime import timedelta
+
 
 
 @login_required
@@ -171,7 +173,35 @@ def cooking_data_view(request,id):
 
 
 def reheating_data_entry(request,location=None):
-    pass
+    corrective_actions=CorrectiveAction.objects.filter(control_point__name__istartswith='cool',control_point__location__name = location).values_list('name',flat=True)
+    control_point = ControlPoint.objects.filter(location__name = location,name__istartswith='cool')
+    if control_point:
+        control_point = control_point[0]
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        location = Location.objects.get(name = data.get('storage_location'))
+        sub_location = ControlPoint.objects.get(name =data.get('sub_storage_location'),location = location)
+        reheating_data = ReHeatingData()
+        reheating_data.storage_location = location
+        reheating_data.sub_storage_location = sub_location
+        reheating_data.food_item =  data.get('food_item')
+        reheating_data.date_of_reheating =  data.get('date_of_reheating')
+        reheating_data.reheating_temperature =  data.get('temp')
+        duration = timedelta(minutes= data.get('time_taken'))
+        reheating_data.time_taken_for_reheating = duration
+        reheating_data.action_comment =  data.get('action_comment')
+        reheating_data.corrective_actions =  data.get('corrective_actions')
+        reheating_data.data_entered_by = UserProfile.objects.get(user = request.user)
+        reheating_data.save()
+        return JsonResponse({"success": True})
+    return render(request, 'users/reheating_data_entry.html',{"location":location,'control_point':control_point,'corrective_actions':list(corrective_actions)})
+
 
 def reheating_data_list(request,location):
-    pass
+    reheating_data = ReHeatingData.objects.filter(storage_location__name = location)
+    return render(request, 'users/reheating_data_list.html',{"location":location,'reheating_data':reheating_data})
+
+
+def reheating_data_view(request,id):
+    reheating_data = ReHeatingData.objects.filter(id = id)[0]
+    return render(request, 'users/reheating_data_view.html',{'reheating_data':reheating_data})

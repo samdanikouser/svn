@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<section class="intro">
+    <div class="h-100">
+        <div>
+            <a href="{% url 'reheating_data_entry' location %}" class="btn btn-primary btn-sm" style="font-family:Monospace">Add Re-heating data</a>
+            <div class=" text-center ">
+                <h1 style="font-family:Monospace">REHEATING LIST</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-10">
+                    <div class="table-responsive bg-white">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">S.NO.</th>
+                                <th scope="col">Item Name</th>
+                                <th scope="col">Date of reheating</th>
+                                <th scope="col">Reheating Temperature</th>
+                                <th scope="col">Time taken for reheating</th>
+                                <th scope="col">Entered by</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for reheating_datas in reheating_data %}
+                            <tr>
+                                <td style="color:black">{{forloop.counter}}</td>
+                                <td style="color:black">{{reheating_datas.food_item}}</td>
+                                <td style="color:black">{{reheating_datas.date_of_reheating}}</td>
+                                <td style="color:black">{{reheating_datas.reheating_temperature}}</td>
+                                <td style="color:black">{{reheating_datas.time_taken_for_reheating}}</td>
+                                <td style="color:black">{{reheating_datas.data_entered_by}}</td>
+                                <td>
+                                    <a href="{% url 'reheating_data_view' reheating_datas.id %}"
+                                       class="btn btn-danger btn-sm">View</a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

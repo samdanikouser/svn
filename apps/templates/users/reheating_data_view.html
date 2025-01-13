@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+{% load filters %}
+
+{% block title %}Reheating of {{reheating_data.food_item}}{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} message" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="text-decoration: none; font-size: 16px;">Back</a>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Reheating Details of {{reheating_data.food_item}}</h4>
+            </div>
+            <div class="card-body">
+                <div class="container mt-4">                    
+                    <!-- Personal Hygiene Record -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                            <p><strong>Location : </strong>{{reheating_data.storage_location }}</p>
+                            <p><strong>Sub Location : </strong> {{ reheating_data.sub_storage_location }}</p>
+                            <p><strong>Item Name : </strong>{{reheating_data.food_item}}</p>
+                            <p><strong>Date of duration : </strong>{{reheating_data.date_of_reheating}}</p>
+                            <p><strong>Reheating temperature : </strong>{{reheating_data.reheating_temperature}}</p>
+                            <p><strong>Time taken for Reheating : </strong>{{reheating_data.time_taken_for_reheating}}</p>
+                            <!-- Parameters Checked with New Line After Yes/No -->
+                            <p><strong>Corrective Actions:</strong> 
+                                {% if reheating_data.corrective_actions %}
+                                {{ reheating_data.corrective_actions|replace_list_bracket|safe  }}
+                                {% else %}
+                                    No parameters available.
+                                {% endif %}
+                            </p>
+                            <p><strong>Action Description : </strong>{{reheating_data.action_comment}}</p>
+                            <p><strong>Description : </strong>{{reheating_data.text_message}}</p>
+                            <p><strong>Supervisor Approver : </strong>{{reheating_data.supervisor_approved_by}}</p>
+                            <p><strong>Manager Approver : </strong>{{reheating_data.manager_approved_by}}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

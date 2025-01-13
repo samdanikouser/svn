@@ -20,5 +20,7 @@ urlpatterns = [
     path('/Cooking/view/<int:id>', views.cooking_data_view, name='cooking_data_view'),
     path('/Re-Heating/add/<str:location>/', views.reheating_data_entry, name='reheating_data_entry'),
     path('/Re-Heating/add/', views.reheating_data_entry, name='reheating_data_entry'),
-    path('/Re-Heating/list/<str:location>', views.reheating_data_entry, name='reheating_data_entry'),
+    path('/Re-Heating/list/<str:location>', views.reheating_data_list, name='reheating_data_list'),
+    path('/Re-Heating/view/<int:id>', views.reheating_data_view, name='reheating_data_view'),
+
 ]
