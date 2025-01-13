@@ -21,7 +21,10 @@ urlpatterns = [
     path("department",include("apps.department.urls")),
     path("attendance",include("apps.attendance.urls")),
     path("attendance",include("apps.attendance.urls")),
-    path("disciplinary_record",include("apps.disciplinary_record.urls"))
+    path("disciplinary_record",include("apps.disciplinary_record.urls")),
+    path("internal_orders",include("apps.internal_orders.urls")),
+    path("stewarding",include("apps.stewarding.urls"))
+
 ]
 
 if settings.DEBUG:

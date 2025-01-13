@@ -47,7 +47,7 @@
             {% endif %}
             {% if user_role == 'admin' or user_role == 'manager' %}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
-                <a class="nav-link" href="/page-user.html">
+                <a class="nav-link" href="{% url 'internal_orders' %}">
                     <i class="material-icons">assignment</i>
                     <p>Internal Orders</p>
                 </a>
@@ -59,7 +59,7 @@
                 </a>
             </li>            
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
-                <a class="nav-link" href="/page-user.html">
+                <a class="nav-link" href="{% url 'stewarding' %}">
                     <i class="material-icons">cleaning_services</i>
                     <p>Stewarding</p>
                 </a>
@@ -72,12 +72,12 @@
                     <p>Pending approvals</p>
                 </a>
             </li>
-            <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
+            <!-- <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
                 <a class="nav-link" href="/ui-notifications.html">
                     <i class="material-icons">notifications</i>
                     <p>Notifications</p>
                 </a>
-            </li>
+            </li> -->
             {% endif %}
             <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="{% if location %}{% url 'daily_activity' location %}{% else %}{% url 'daily_activity' %}{% endif %}">
@@ -103,12 +103,12 @@
                     <p>Re-Heating</p>
                 </a>
             </li>
-            <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+            <!-- <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/page-user.html">
                     <i class="material-icons">person</i>
                     <p>User Profile</p>
                 </a>
-            </li>
+            </li> -->
             <li class="nav-item ">
                 <a class="nav-link" href="{% url 'logout' %}">
                     <i class="material-icons">directions_run</i>

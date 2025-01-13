@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'apps.personalhygiene',
     'apps.department',
     'apps.attendance',
-    'apps.disciplinary_record'
+    'apps.disciplinary_record',
+    'apps.stewarding',
+    'apps.internal_orders'
 ]
 
 MIDDLEWARE = [
