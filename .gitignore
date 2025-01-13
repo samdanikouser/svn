@@ -56,3 +56,5 @@ node_modules/
 # Ignore specific migration files (if needed)
 */migrations/*.py[cod]
 !*/migrations/__init__.py
+
+.idea/

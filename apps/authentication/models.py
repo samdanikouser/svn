@@ -9,6 +9,7 @@ from apps.department.models import Department
 
 class UserProfile(models.Model):
     """User Profile model, created on creating user while registration"""
+    id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True,blank=True)
     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('line_staff', 'Line Staff'),
                                                     ('supervisor', 'Supervisor'),('managers','Managers'),('e_learning','e-Learning')],null=True,blank=True)

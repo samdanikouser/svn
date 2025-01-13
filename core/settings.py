@@ -151,3 +151,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Folder where media files are sto
 
 #############################################################
 #############################################################
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

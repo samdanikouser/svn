@@ -11,19 +11,19 @@ from django.urls import path, include  # add this
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("apps.authentication.urls")),
-    path("add", include("apps.home.urls")),
-    path("haccp", include("apps.haccp.urls")),
-    path("action", include("apps.correctiveaction.urls")),
-    path("location", include("apps.location.urls")),
-    path("role", include("apps.roles.urls")),
-    path("user", include("apps.usersapp.urls")),
-    path("personalhygiene",include("apps.personalhygiene.urls")),
-    path("department",include("apps.department.urls")),
-    path("attendance",include("apps.attendance.urls")),
-    path("attendance",include("apps.attendance.urls")),
-    path("disciplinary_record",include("apps.disciplinary_record.urls")),
-    path("internal_orders",include("apps.internal_orders.urls")),
-    path("stewarding",include("apps.stewarding.urls"))
+    path("add/", include("apps.home.urls")),
+    path("haccp/", include("apps.haccp.urls")),
+    path("action/", include("apps.correctiveaction.urls")),
+    path("location/", include("apps.location.urls")),
+    path("role/", include("apps.roles.urls")),
+    path("user/", include("apps.usersapp.urls")),
+    path("personalhygiene/",include("apps.personalhygiene.urls")),
+    path("department/",include("apps.department.urls")),
+    path("attendance/",include("apps.attendance.urls")),
+    path("attendance/",include("apps.attendance.urls")),
+    path("disciplinary_record/",include("apps.disciplinary_record.urls")),
+    path("internal_orders/",include("apps.internal_orders.urls")),
+    path("stewarding/",include("apps.stewarding.urls"))
 
 ]
 

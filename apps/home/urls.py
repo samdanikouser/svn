@@ -13,6 +13,6 @@ urlpatterns = [
 
     # Matches any html file
     # re_path(r'^.*\.*', views.pages, name='pages'),
-    path('/addMore', views.add_more, name='add_more'),
+    path('addMore', views.add_more, name='add_more'),
 
 ]
